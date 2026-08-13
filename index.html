@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#12130f">
+<title>Upright</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #12130f;
+    --surface: #1b1d17;
+    --surface-2: #23261e;
+    --line: #32362a;
+    --text: #eef0e6;
+    --muted: #9ca08c;
+    --dim: #6b6f5e;
+    --sage: #a3b18a;
+    --sage-deep: #7f9268;
+    --clay: #c98a5e;
+    --done: #b6c79a;
+  }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+  }
+  body {
+    max-width: 640px; margin: 0 auto;
+    padding: 0 20px calc(120px + env(safe-area-inset-bottom));
+    padding-top: env(safe-area-inset-top);
+  }
+
+  /* Header */
+  header { padding: 30px 0 18px; }
+  .brand {
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .brand h1 {
+    font-size: 30px; font-weight: 800; letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .brand h1 .up { color: var(--sage); }
+  .tagline {
+    font-size: 12px; color: var(--dim); letter-spacing: 0.14em;
+    text-transform: uppercase; margin-top: 8px; font-weight: 500;
+  }
+
+  /* Streak + progress band */
+  .band {
+    margin-top: 20px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: 18px;
+    padding: 18px 20px; display: flex; align-items: center; gap: 20px;
+  }
+  .ring { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .pct {
+    position: absolute; inset: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 15px; font-weight: 700;
+  }
+  .band-info { flex: 1; min-width: 0; }
+  .band-info .count { font-size: 15px; font-weight: 600; }
+  .band-info .count span { color: var(--sage); }
+  .band-info .sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .streak {
+    text-align: center; flex-shrink: 0; padding-left: 18px;
+    border-left: 1px solid var(--line);
+  }
+  .streak .num { font-size: 24px; font-weight: 800; line-height: 1; color: var(--clay); }
+  .streak .lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 5px; }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; margin-top: 24px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 5px;
+  }
+  .tab {
+    flex: 1; text-align: center; padding: 10px 6px; border-radius: 10px;
+    font-size: 13.5px; font-weight: 600; color: var(--muted);
+    background: transparent; border: none; cursor: pointer;
+    transition: all 0.18s ease; letter-spacing: -0.01em;
+  }
+  .tab.active { background: var(--sage-deep); color: #12130f; }
+
+  /* Section */
+  .section { margin-top: 26px; animation: fade 0.3s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
+  .section-intro {
+    font-size: 13px; color: var(--muted); line-height: 1.5;
+    margin-bottom: 18px; padding: 0 2px;
+  }
+  .group-label {
+    font-size: 11px; font-weight: 700; color: var(--sage);
+    text-transform: uppercase; letter-spacing: 0.13em;
+    margin: 22px 2px 12px;
+  }
+  .group-label:first-of-type { margin-top: 4px; }
+
+  /* Exercise card */
+  .ex {
+    display: flex; align-items: center; gap: 15px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 15px; padding: 15px 16px; margin-bottom: 9px;
+    cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.08s;
+    user-select: none;
+  }
+  .ex:active { transform: scale(0.988); }
+  .ex.done { background: var(--surface-2); border-color: transparent; }
+  .check {
+    width: 26px; height: 26px; border-radius: 9px; flex-shrink: 0;
+    border: 2px solid var(--line); position: relative;
+    transition: all 0.18s ease;
+  }
+  .ex.done .check { background: var(--done); border-color: var(--done); }
+  .check svg {
+    position: absolute; inset: 0; margin: auto; width: 15px; height: 15px;
+    opacity: 0; transform: scale(0.5); transition: all 0.18s ease;
+  }
+  .ex.done .check svg { opacity: 1; transform: scale(1); }
+  .ex-body { flex: 1; min-width: 0; }
+  .ex-name {
+    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
+    transition: color 0.15s;
+  }
+  .ex.done .ex-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--dim); }
+  .ex-dose { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .ex.done .ex-dose { color: var(--dim); }
+  .ex-how {
+    margin-top: 0; max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, margin-top 0.3s ease;
+  }
+  .ex.show-cue .ex-how { max-height: 600px; margin-top: 12px; }
+  .how-label {
+    font-size: 10px; font-weight: 700; color: var(--sage);
+    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px;
+  }
+  .how-steps { list-style: none; counter-reset: step; }
+  .how-steps li {
+    position: relative; padding-left: 26px; margin-bottom: 8px;
+    font-size: 12.5px; color: var(--muted); line-height: 1.5;
+  }
+  .how-steps li::before {
+    counter-increment: step; content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--surface); border: 1px solid var(--sage-deep);
+    color: var(--sage); font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .how-cue {
+    margin-top: 10px; padding: 9px 12px; background: var(--bg);
+    border-radius: 9px; border-left: 2px solid var(--clay);
+    font-size: 12px; color: var(--text); line-height: 1.5;
+  }
+  .how-cue b { color: var(--clay); font-weight: 700; }
+  .info {
+    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+    border: 1px solid var(--line); color: var(--muted);
+    font-size: 12px; font-weight: 700; display: flex; align-items: center;
+    justify-content: center; font-style: italic; transition: all 0.15s;
+  }
+  .ex.show-cue .info { background: var(--sage-deep); color: #12130f; border-color: var(--sage-deep); }
+
+  /* Habit callout */
+  .habit {
+    margin-top: 24px; background: linear-gradient(135deg, #22261c, #1a1d15);
+    border: 1px solid var(--sage-deep); border-radius: 16px; padding: 18px 20px;
+  }
+  .habit h3 { font-size: 13px; color: var(--sage); letter-spacing: 0.08em; text-transform: uppercase; }
+  .habit p { font-size: 13.5px; color: var(--text); line-height: 1.55; margin-top: 9px; }
+  .habit .cue-line { color: var(--muted); font-size: 12.5px; margin-top: 8px; }
+
+  /* Reset button */
+  .reset-wrap { margin-top: 30px; text-align: center; }
+  .reset {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    font-size: 13px; font-weight: 500; padding: 11px 22px; border-radius: 11px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .reset:active { background: var(--surface); }
+
+  /* Celebration bar */
+  .cheer {
+    position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    background: var(--sage); color: #12130f;
+    padding: 13px 24px; border-radius: 14px; font-weight: 700; font-size: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4); transition: transform 0.4s cubic-bezier(.2,.9,.3,1.3);
+    z-index: 50; white-space: nowrap;
+  }
+  .cheer.show { transform: translateX(-50%) translateY(0); }
+
+  footer { text-align: center; font-size: 11px; color: var(--dim); margin-top: 34px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1><span class="up">Up</span>right</h1>
+  </div>
+  <div class="tagline">Daily posture &middot; back &middot; core</div>
+</header>
+
+<div class="band">
+  <div class="ring">
+    <svg width="60" height="60">
+      <circle cx="30" cy="30" r="26" fill="none" stroke="#32362a" stroke-width="6"/>
+      <circle id="ringProg" cx="30" cy="30" r="26" fill="none" stroke="#a3b18a" stroke-width="6"
+              stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
+    </svg>
+    <div class="pct" id="ringPct">0%</div>
+  </div>
+  <div class="band-info">
+    <div class="count"><span id="doneCount">0</span> of <span id="totalCount">0</span> done today</div>
+    <div class="sub" id="bandSub">Tap an exercise to check it off</div>
+  </div>
+  <div class="streak">
+    <div class="num" id="streakNum">0</div>
+    <div class="lbl">day streak</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" data-tab="daily">Daily</button>
+  <button class="tab" data-tab="gym">Gym</button>
+</div>
+
+<div id="content"></div>
+
+<div class="cheer" id="cheer">All done today. Nice work.</div>
+
+<footer>
+  Progress saves on this device.<br>
+  Consistency beats intensity — a few minutes every day is the whole game.
+</footer>
+
+<script>
+const PLAN = {
+  daily: {
+    intro: "About 8 minutes. Do it once a day, any time — no equipment beyond a rolled towel. Tap the i on any exercise for how to do it.",
+    groups: [
+      { label: "The Routine", items: [
+        { id: "d_chin", name: "Chin Tucks", dose: "8 reps · hold 3 sec",
+          steps: [
+            "Sit or stand tall, eyes looking straight ahead.",
+            "Without dropping your chin, slide your head straight back — like making a double chin.",
+            "Keep your eyes level the whole time; you're gliding back, not nodding down.",
+            "Hold 3 seconds, then fully release. Repeat 8 times."
+          ],
+          cue: "<b>Feel it at the base of the skull.</b> If your chin drops it's a neck curl, not a tuck. Fixes forward head." },
+        { id: "d_slide", name: "Floor Slides", dose: "10 slow reps",
+          steps: [
+            "Lie on your back, knees bent, feet flat. Press your low back into the floor.",
+            "Put your arms in a goalpost — elbows bent, backs of hands on the floor.",
+            "Slowly slide your arms overhead, keeping backs of hands and wrists on the floor.",
+            "Slide back down, driving the shoulder blades down and in at the bottom."
+          ],
+          cue: "<b>Low back stays flat the whole time.</b> Only go as far as your hands stay on the floor — that's your honest range." },
+        { id: "d_thoracic", name: "Thoracic Extension", dose: "1–2 min over towel",
+          steps: [
+            "Roll a towel and lay it across your mid-back, between the shoulder blades (nipple line).",
+            "Lie back over it, knees bent, feet flat. Cradle your head in your hands or reach arms overhead.",
+            "Let your mid-back arch gently over the towel. Breathe — each exhale opens it a little more.",
+            "Move the towel up or down an inch or two to hit different spots along the mid-back."
+          ],
+          cue: "<b>Arch the mid-back, not the low back.</b> Gentle chin tuck, ribs down. Feel it between the blades — if it's in your low back, the towel's too low." },
+        { id: "d_tw", name: "Prone T + W Raises", dose: "8 each",
+          steps: [
+            "Lie face down, forehead resting down, neck long.",
+            "T: arms straight out to the sides. Lift them off the floor, squeezing the blades together.",
+            "W: bend elbows, pull them down toward your ribs, squeezing the blades down and in.",
+            "Pause 1–2 sec at the top of each. 8 reps of each shape."
+          ],
+          cue: "<b>Blades down AND in</b> — toward opposite back pockets. Don't shrug toward your ears. Light and controlled." },
+        { id: "d_cobra", name: "Prone Cobra Hold", dose: "2 × 20 sec",
+          steps: [
+            "Lie face down, arms by your sides, palms down.",
+            "Lift your chest off the floor, rotating your palms out so thumbs point up.",
+            "Pinch your shoulder blades together, tuck your chin, keep the neck long.",
+            "Hold 20 seconds, squeezing the whole time. Rest, repeat once."
+          ],
+          cue: "<b>Chin tucked, blades pinched.</b> Lift from the upper back, not by cranking the low back." },
+        { id: "d_pec", name: "Doorway Pec Stretch", dose: "30 sec / side",
+          steps: [
+            "Stand in a doorway. Place one forearm flat on the frame, elbow at shoulder height.",
+            "Step through the doorway with the same-side foot.",
+            "Rotate your chest away from that arm until you feel a stretch across the chest/front of shoulder.",
+            "Hold 30 seconds, breathing. Switch sides."
+          ],
+          cue: "<b>Releases the tight chest</b> that pulls you into rounding. Strengthening the back won't win until the front lets go." },
+        { id: "d_deadbug", name: "Deadbug", dose: "8 / side",
+          steps: [
+            "Lie on your back, arms reaching at the ceiling, hips and knees bent 90° (feet up).",
+            "Press your low back flat into the floor — no gap.",
+            "Slowly lower your opposite arm and leg toward the floor, keeping the back flat.",
+            "Return and switch sides. Move slow — control beats speed. 8 per side."
+          ],
+          cue: "<b>Low back never arches.</b> Exhale as you extend. If the back lifts off the floor, use a smaller range." },
+      ]}
+    ],
+    habit: {
+      title: "The habit that matters most",
+      body: "Every hour or so when you catch yourself slouching, reset and hold 10 seconds. This does more than the exercises — your back hurts because it's stuck in a bad position all day, not because it's weak.",
+      cue: "ribs down · blades back and down · chin tucked · long neck"
+    }
+  },
+  gym: {
+    intro: "Add 2–3× per week when you have equipment. Keep doing the daily routine too — the gym work doesn't replace the mobility and postural habit. Tap the i for how-to.",
+    groups: [
+      { label: "Pull — the priority", items: [
+        { id: "g_row", name: "Chest-Supported Row", dose: "3 × 10–12",
+          steps: [
+            "Set an incline bench, lie chest-down against it, a dumbbell in each hand hanging below.",
+            "Let the shoulder blades stretch forward at the bottom.",
+            "Row by driving your elbows back and up, squeezing the blades together and down.",
+            "Pause 1 sec at the top, lower under control. 3 sets of 10–12."
+          ],
+          cue: "<b>Lead with the elbow, not the hand.</b> The #1 posture builder — chest support removes cheating." },
+        { id: "g_face", name: "Face Pulls", dose: "3 × 15",
+          steps: [
+            "Set a cable (or band) at face height with a rope attachment.",
+            "Step back, arms straight, palms facing in.",
+            "Pull the rope toward your forehead, elbows high and wide.",
+            "At the end, rotate so your knuckles point behind you. Control back. 3 sets of 15."
+          ],
+          cue: "<b>Best single move for between-blade pain.</b> Elbows high, rotate out at the end. Do these religiously." },
+        { id: "g_pulldown", name: "Lat Pulldown", dose: "3 × 8–10",
+          steps: [
+            "Grip the bar slightly wider than shoulders, sit with thighs anchored.",
+            "Chest up, slight lean back. Pull the bar to your collarbone.",
+            "Drive elbows down toward your ribs, squeezing the lats.",
+            "Control the bar back up to a full stretch. 3 sets of 8–10."
+          ],
+          cue: "<b>Bar to the collarbone — never behind the neck.</b> Chest stays up throughout." },
+        { id: "g_reardelt", name: "Rear Delt Fly", dose: "3 × 12–15",
+          steps: [
+            "Sit on a reverse pec deck, or hinge forward with light dumbbells.",
+            "Arms slightly bent, sweep them out and back in a wide arc.",
+            "Squeeze the rear shoulders and mid-back at the end.",
+            "Light weight, high reps, feel the squeeze. 3 sets of 12–15."
+          ],
+          cue: "<b>Light weight, feel the squeeze.</b> Complements face pulls for the rear shoulders." },
+      ]},
+      { label: "Upper back detail", items: [
+        { id: "g_ytw", name: "Incline Y-T-W Raises", dose: "2 × 10–12",
+          steps: [
+            "Lie chest-down on an incline bench with very light dumbbells.",
+            "Y: raise arms overhead in a Y, thumbs up, squeezing the lower traps.",
+            "T and W: same shapes as your floor version, now loaded.",
+            "Pause at the top of each. 2 sets of 10–12 per shape."
+          ],
+          cue: "<b>Light dumbbells — these are for the small stabilizers,</b> not ego. Loaded version of your floor T/W." },
+      ]},
+      { label: "Core", items: [
+        { id: "g_pallof", name: "Cable Pallof Press", dose: "3 × 10 / side",
+          steps: [
+            "Set a cable at chest height. Stand side-on, hold the handle at your chest with both hands.",
+            "Brace your core. Press the handle straight out in front of you.",
+            "Resist the cable trying to rotate you — hips and shoulders stay square.",
+            "Hold 1–2 sec, return to chest. 3 sets of 10 per side."
+          ],
+          cue: "<b>Anti-rotation — resist the twist.</b> The deep-core move your home plan couldn't fully load." },
+        { id: "g_carry", name: "Suitcase Carry", dose: "3 × 30 sec / side",
+          steps: [
+            "Hold one heavy dumbbell at your side, like a suitcase.",
+            "Stand tall — ribs down, blades back, don't lean toward or away from the weight.",
+            "Walk slowly and controlled for 30 seconds, staying upright.",
+            "Switch sides. 3 sets per side."
+          ],
+          cue: "<b>Walk tall, don't lean.</b> One of the best real-world core + posture builders there is." },
+      ]}
+    ],
+    habit: {
+      title: "If you only did two",
+      body: "Rows and face pulls. Rows build the back, face pulls fix the posture and the pain. Everything else is refinement on top of those two — don't overcomplicate it.",
+      cue: "squeeze and pause on every rep · don't shrug · full range"
+    }
+  }
+};
+
+const CIRC = 163.4;
+let currentTab = 'daily';
+
+function todayKey() {
+  const d = new Date();
+  return `upright_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function loadDay() {
+  try { return JSON.parse(localStorage.getItem(todayKey()) || '{}'); }
+  catch { return {}; }
+}
+function saveDay(state) {
+  try { localStorage.setItem(todayKey(), JSON.stringify(state)); } catch {}
+}
+
+// Streak logic
+function updateStreak() {
+  try {
+    const daily = PLAN.daily.groups.flatMap(g => g.items).map(i => i.id);
+    const state = loadDay();
+    const allDailyDone = daily.every(id => state[id]);
+    const meta = JSON.parse(localStorage.getItem('upright_meta') || '{}');
+    const tk = todayKey().replace('upright_','');
+
+    if (allDailyDone && meta.lastDone !== tk) {
+      const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+      const yk = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
+      meta.streak = (meta.lastDone === yk) ? (meta.streak||0)+1 : 1;
+      meta.lastDone = tk;
+      localStorage.setItem('upright_meta', JSON.stringify(meta));
+    }
+    return meta.streak || 0;
+  } catch { return 0; }
+}
+
+function render() {
+  const plan = PLAN[currentTab];
+  const state = loadDay();
+  const c = document.getElementById('content');
+  let html = `<div class="section"><div class="section-intro">${plan.intro}</div>`;
+
+  plan.groups.forEach(g => {
+    html += `<div class="group-label">${g.label}</div>`;
+    g.items.forEach(item => {
+      const done = state[item.id] ? 'done' : '';
+      html += `
+        <div class="ex ${done}" data-id="${item.id}">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#12130f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="ex-body">
+            <div class="ex-name">${item.name}</div>
+            <div class="ex-dose">${item.dose}</div>
+            <div class="ex-how">
+              <div class="how-label">How to do it</div>
+              <ol class="how-steps">${item.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+              <div class="how-cue">${item.cue}</div>
+            </div>
+          </div>
+          <div class="info" data-info="${item.id}">i</div>
+        </div>`;
+    });
+  });
+
+  html += `
+    <div class="habit">
+      <h3>${plan.habit.title}</h3>
+      <p>${plan.habit.body}</p>
+      <div class="cue-line">${plan.habit.cue}</div>
+    </div>
+    <div class="reset-wrap"><button class="reset" id="resetBtn">Reset today</button></div>
+  </div>`;
+  c.innerHTML = html;
+  attach();
+  updateBand();
+}
+
+function attach() {
+  document.querySelectorAll('.ex').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.closest('.info')) return;
+      const id = el.dataset.id;
+      const state = loadDay();
+      state[id] = !state[id];
+      saveDay(state);
+      el.classList.toggle('done', state[id]);
+      if (navigator.vibrate && state[id]) navigator.vibrate(8);
+      updateBand();
+    });
+  });
+  document.querySelectorAll('.info').forEach(el => {
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.closest('.ex').classList.toggle('show-cue');
+    });
+  });
+  document.getElementById('resetBtn').addEventListener('click', () => {
+    const state = loadDay();
+    PLAN[currentTab].groups.flatMap(g=>g.items).forEach(i => delete state[i.id]);
+    saveDay(state);
+    render();
+  });
+}
+
+function updateBand() {
+  const items = PLAN[currentTab].groups.flatMap(g => g.items);
+  const state = loadDay();
+  const done = items.filter(i => state[i.id]).length;
+  const total = items.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = total;
+  document.getElementById('ringPct').textContent = pct + '%';
+  document.getElementById('ringProg').style.strokeDashoffset = CIRC - (CIRC * pct/100);
+
+  const streak = updateStreak();
+  document.getElementById('streakNum').textContent = streak;
+
+  const sub = document.getElementById('bandSub');
+  if (done === 0) sub.textContent = 'Tap an exercise to check it off';
+  else if (done === total) sub.textContent = currentTab === 'daily' ? 'Complete — streak counted' : 'Session complete';
+  else sub.textContent = `${total - done} to go`;
+
+  if (done === total && total > 0) showCheer();
+}
+
+let cheerTimer;
+function showCheer() {
+  const ch = document.getElementById('cheer');
+  ch.textContent = currentTab === 'daily' ? 'Daily done. Streak counted.' : 'Gym session logged. Solid.';
+  ch.classList.add('show');
+  clearTimeout(cheerTimer);
+  cheerTimer = setTimeout(() => ch.classList.remove('show'), 2600);
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    currentTab = t.dataset.tab;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
