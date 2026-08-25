@@ -80,10 +80,10 @@
     border-radius: 14px; padding: 5px;
   }
   .tab {
-    flex: 1; text-align: center; padding: 10px 6px; border-radius: 10px;
-    font-size: 13.5px; font-weight: 600; color: var(--muted);
+    flex: 1; text-align: center; padding: 10px 4px; border-radius: 10px;
+    font-size: 12.5px; font-weight: 600; color: var(--muted);
     background: transparent; border: none; cursor: pointer;
-    transition: all 0.18s ease; letter-spacing: -0.01em;
+    transition: all 0.18s ease; letter-spacing: -0.01em; white-space: nowrap;
   }
   .tab.active { background: var(--sage-deep); color: #12130f; }
 
@@ -227,7 +227,8 @@
 
 <div class="tabs">
   <button class="tab active" data-tab="daily">Daily</button>
-  <button class="tab" data-tab="gym">Gym</button>
+  <button class="tab" data-tab="lift">Lift</button>
+  <button class="tab" data-tab="gym">Posture Gym</button>
 </div>
 
 <div id="content"></div>
@@ -247,12 +248,12 @@ const PLAN = {
       { label: "The Routine", items: [
         { id: "d_chin", name: "Chin Tucks", dose: "8 reps · hold 3 sec",
           steps: [
-            "Sit or stand tall, eyes looking straight ahead.",
+            "Sit, stand, or lie on your back (lying adds light resistance — good for strengthening).",
             "Without dropping your chin, slide your head straight back — like making a double chin.",
             "Keep your eyes level the whole time; you're gliding back, not nodding down.",
             "Hold 3 seconds, then fully release. Repeat 8 times."
           ],
-          cue: "<b>Feel it at the base of the skull.</b> If your chin drops it's a neck curl, not a tuck. Fixes forward head." },
+          cue: "<b>Feel it at the base of the skull.</b> If your chin drops it's a neck curl, not a tuck. Lying down, glide the back of the head along the floor. Fixes forward head." },
         { id: "d_slide", name: "Floor Slides", dose: "10 slow reps",
           steps: [
             "Lie on your back, knees bent, feet flat. Press your low back into the floor.",
@@ -282,9 +283,10 @@ const PLAN = {
             "Lie face down, arms by your sides, palms down.",
             "Lift your chest off the floor, rotating your palms out so thumbs point up.",
             "Pinch your shoulder blades together, tuck your chin, keep the neck long.",
+            "Keep eyes on the floor a foot ahead (~45° gaze) — head in line with the spine, not craned up.",
             "Hold 20 seconds, squeezing the whole time. Rest, repeat once."
           ],
-          cue: "<b>Chin tucked, blades pinched.</b> Lift from the upper back, not by cranking the low back." },
+          cue: "<b>Chin tucked, eyes down, neck long.</b> If you feel pinching at the back of the neck, your head's tipped too far back. Lift from the upper back, not the low back." },
         { id: "d_pec", name: "Doorway Pec Stretch", dose: "30 sec / side",
           steps: [
             "Stand in a doorway. Place one forearm flat on the frame, elbow at shoulder height.",
@@ -296,17 +298,135 @@ const PLAN = {
         { id: "d_deadbug", name: "Deadbug", dose: "8 / side",
           steps: [
             "Lie on your back, arms reaching at the ceiling, hips and knees bent 90° (feet up).",
-            "Press your low back flat into the floor — no gap.",
-            "Slowly lower your opposite arm and leg toward the floor, keeping the back flat.",
-            "Return and switch sides. Move slow — control beats speed. 8 per side."
+            "Press your low back flat into the floor — no gap. Take a breath in here.",
+            "Exhale slowly as you lower the opposite arm and leg toward the floor, keeping the back flat.",
+            "Inhale as you return, then switch sides. Move slow — control beats speed. 8 per side."
           ],
-          cue: "<b>Low back never arches.</b> Exhale as you extend. If the back lifts off the floor, use a smaller range." },
+          cue: "<b>Exhale as you extend, inhale as you return.</b> The exhale locks the low back flat. If the back lifts off the floor, use a smaller range." },
       ]}
     ],
     habit: {
       title: "The habit that matters most",
       body: "Every hour or so when you catch yourself slouching, reset and hold 10 seconds. This does more than the exercises — your back hurts because it's stuck in a bad position all day, not because it's weak.",
       cue: "ribs down · blades back and down · chin tucked · long neck"
+    }
+  },
+  lift: {
+    intro: "Full-body strength base + muscle. 3×/week, alternating Day A / Day B (~40–45 min). Schedule: Mon A · Wed B · Fri A, then next week flips to Mon B · Wed A · Fri B. Add a little weight or a rep whenever you hit the top of a range — that progression is what builds the base.",
+    groups: [
+      { label: "Day A", items: [
+        { id: "l_goblet", name: "Goblet Squat", dose: "4 × 8",
+          steps: [
+            "Hold one dumbbell vertical against your chest, elbows down.",
+            "Feet shoulder-width, sit down between your hips, chest tall.",
+            "Descend until thighs are about parallel, drive up through the heels.",
+            "4 sets of 8. Once the heaviest DB is easy for 4×8, graduate to a barbell squat."
+          ],
+          cue: "<b>Chest tall, knees track over toes.</b> Ride the goblet until you run out of load, then move to a bar." },
+        { id: "l_bench", name: "DB Bench Press", dose: "4 × 8",
+          steps: [
+            "Lie on a flat bench, a dumbbell in each hand at chest level.",
+            "Press up until arms are straight, dumbbells over the chest.",
+            "Lower under control until you feel a stretch across the chest.",
+            "4 sets of 8. Keep shoulder blades pinched back on the bench."
+          ],
+          cue: "<b>Blades retracted into the bench</b> — protects the shoulders and hits the chest better." },
+        { id: "l_row", name: "Barbell Row", dose: "4 × 8",
+          steps: [
+            "Hinge at the hips, flat back, bar hanging at knee height.",
+            "Row the bar to your lower ribs, driving the elbows back.",
+            "Squeeze the shoulder blades, lower under control.",
+            "4 sets of 8. This is your main back builder — keep it strict."
+          ],
+          cue: "<b>Flat back, lead with the elbows.</b> Pull to the lower ribs, not the chest." },
+        { id: "l_incline", name: "Incline DB Press", dose: "3 × 10–12",
+          steps: [
+            "Set a bench to ~30°. Dumbbell in each hand at upper-chest level.",
+            "Press up and slightly together, control back down.",
+            "3 sets of 10–12 — higher reps here for muscle growth.",
+            "Lighter than flat bench; focus on the squeeze, not max load."
+          ],
+          cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
+        { id: "l_facepullA", name: "Face Pulls", dose: "3 × 15",
+          steps: [
+            "Cable or band at face height, rope or ends in each hand.",
+            "Pull toward your forehead, elbows high and wide.",
+            "Rotate so knuckles point behind you at the end, control back.",
+            "3 sets of 15. Added to balance all the pressing — key for your posture."
+          ],
+          cue: "<b>Added for you specifically</b> — keeps pulling ≥ pressing so your shoulders don't round." },
+        { id: "l_knee", name: "Knee Raises", dose: "3 × 10–12",
+          steps: [
+            "Hang from a bar or use a captain's chair, torso upright.",
+            "Raise your knees toward your chest by curling the pelvis up.",
+            "Lower under control — no swinging.",
+            "3 sets of 10–12. Stop if your stomach domes."
+          ],
+          cue: "<b>Curl the pelvis, don't just lift the legs.</b> No momentum. Stop the instant you see doming." },
+      ]},
+      { label: "Day B", items: [
+        { id: "l_deadlift", name: "Deadlift", dose: "3 × 5",
+          steps: [
+            "Bar over mid-foot, hinge down, flat back, grip just outside the knees.",
+            "Take the slack out of the bar, brace hard.",
+            "Drive through the floor, standing tall — bar stays close to the body.",
+            "3 sets of 5. Reset each rep. Heavy, low reps — this is a pure strength builder."
+          ],
+          cue: "<b>Flat back, brace hard, bar close.</b> Strength lift — keep reps low and clean, never grind ugly form." },
+        { id: "l_pullup", name: "Pull-ups", dose: "4 × 6–8",
+          steps: [
+            "Hang from the bar, hands just wider than shoulders.",
+            "Pull your chest toward the bar, driving elbows down.",
+            "Control the descent to a full hang.",
+            "4 sets of 6–8. Use a band or assisted machine if needed."
+          ],
+          cue: "<b>Full range, chest to bar.</b> Assisted is fine — build the reps over time." },
+        { id: "l_ohp", name: "Overhead Press", dose: "3 × 6",
+          steps: [
+            "Barbell or dumbbells at shoulder height, core braced, glutes tight.",
+            "Press straight overhead, head moves slightly forward at the top.",
+            "Lock out with the bar over your mid-foot, lower under control.",
+            "3 sets of 6. Don't lean back — brace the core instead."
+          ],
+          cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
+        { id: "l_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10",
+          steps: [
+            "Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.",
+            "Or Barbell Curl: elbows pinned to sides, curl up, control down.",
+            "3 sets of 8–10 — muscle-building range.",
+            "Pick one; alternate week to week if you like."
+          ],
+          cue: "<b>Hypertrophy reps (8–10).</b> Accessory — controlled, full range, feel the muscle." },
+        { id: "l_facepullB", name: "Face Pulls", dose: "3 × 15",
+          steps: [
+            "Cable or band at face height, rope or ends in each hand.",
+            "Pull toward your forehead, elbows high and wide.",
+            "Rotate so knuckles point behind you at the end, control back.",
+            "3 sets of 15. Yes — both days. Balances the pressing volume."
+          ],
+          cue: "<b>Both days on purpose.</b> The single best insurance against rounding from all the pressing." },
+        { id: "l_reverse", name: "Reverse Crunch", dose: "3 × 12–15",
+          steps: [
+            "Lie on your back, knees bent 90°, hands anchored beside/behind you.",
+            "Curl your pelvis up, peeling the tailbone off the floor toward your chest.",
+            "Lower slowly under control — no swinging.",
+            "3 sets of 12–15. Lower abs, not hip flexors."
+          ],
+          cue: "<b>Peel the tailbone up, lower slow.</b> Stop if the stomach domes." },
+        { id: "l_plank", name: "Plank", dose: "2–3 sets",
+          steps: [
+            "Forearms under shoulders, body in a straight line head to heels.",
+            "Squeeze glutes, tuck the tailbone slightly, brace the abs.",
+            "Hold 20–40 sec without letting the hips sag or pike.",
+            "2–3 sets. Quality of the brace beats total time."
+          ],
+          cue: "<b>Glutes and abs on, ribs down.</b> A tight 30 sec beats a saggy 60 sec." },
+      ]}
+    ],
+    habit: {
+      title: "The two changes that matter most",
+      body: "Face pulls on both days keep your pulling ahead of your pressing — that's what protects your posture while you build. And add a little weight or a rep whenever you hit the top of a range. Progressive overload is what actually builds the base.",
+      cue: "strength reps on the big lifts · 8–12 muscle reps on accessories · pull ≥ press"
     }
   },
   gym: {
@@ -337,24 +457,24 @@ const PLAN = {
             "Control the bar back up to a full stretch. 3 sets of 8–10."
           ],
           cue: "<b>Bar to the collarbone — never behind the neck.</b> Chest stays up throughout." },
-        { id: "g_reardelt", name: "Rear Delt Fly", dose: "3 × 12–15",
+        { id: "g_reardelt", name: "Rear Delt Fly / Cable Crossover", dose: "3 × 12–15",
           steps: [
-            "Sit on a reverse pec deck, or hinge forward with light dumbbells.",
-            "Arms slightly bent, sweep them out and back in a wide arc.",
-            "Squeeze the rear shoulders and mid-back at the end.",
-            "Light weight, high reps, feel the squeeze. 3 sets of 12–15."
+            "Best version: set both cable pulleys to shoulder height. Grab left handle with right hand, right handle with left, so the cables cross (an X).",
+            "Slight constant bend in the elbows, sweep your arms open and back in a wide arc.",
+            "Lead with the backs of the hands / pinkies; squeeze the blades and rear delts, pause behind you.",
+            "Control the return. (No cables? Reverse pec deck or hinged-over dumbbells work too.) 3 × 12–15."
           ],
-          cue: "<b>Light weight, feel the squeeze.</b> Complements face pulls for the rear shoulders." },
+          cue: "<b>Light weight, feel the squeeze.</b> Crossed cables give longer range and constant tension than the machine. Ribs down, don't shrug." },
       ]},
       { label: "Upper back detail", items: [
         { id: "g_ytw", name: "Incline Y-T-W Raises", dose: "2 × 10–12",
           steps: [
-            "Lie chest-down on an incline bench with very light dumbbells.",
+            "Set the bench to a shallow incline (~30°). Lie chest-down, chest on the pad, very light dumbbells (5–10 lb).",
             "Y: raise arms overhead in a Y, thumbs up, squeezing the lower traps.",
             "T and W: same shapes as your floor version, now loaded.",
-            "Pause at the top of each. 2 sets of 10–12 per shape."
+            "Pause and squeeze the blades at the top of each. 2 sets of 10–12 per shape."
           ],
-          cue: "<b>Light dumbbells — these are for the small stabilizers,</b> not ego. Loaded version of your floor T/W." },
+          cue: "<b>~30° bench, light dumbbells — these are for the small stabilizers, not ego.</b> Chest support removes the cheating." },
       ]},
       { label: "Core", items: [
         { id: "g_pallof", name: "Cable Pallof Press", dose: "3 × 10 / side",
