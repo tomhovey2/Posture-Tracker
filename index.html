@@ -312,23 +312,15 @@ const PLAN = {
     }
   },
   lift: {
-    intro: "Full-body strength base + muscle. 3×/week, alternating Day A / Day B (~40–45 min). Schedule: Mon A · Wed B · Fri A, then next week flips to Mon B · Wed A · Fri B. Add a little weight or a rep whenever you hit the top of a range — that progression is what builds the base.",
+    intro: "80% upper body, 3×/week, alternating Day A / Day B (~45–55 min). Schedule: Mon A · Wed B · Fri A, then next week flips to Mon B · Wed A · Fri B. Do all sets of one exercise before moving to the next — straight sets, not circuit — except the core finisher, which is a circuit. Rest ~90 sec–2 min on the main lifts, ~45–60 sec on accessories. Add a little weight or a rep whenever you hit the top of a range.",
     groups: [
-      { label: "Day A", items: [
-        { id: "l_goblet", name: "Goblet Squat", dose: "4 × 8",
-          steps: [
-            "Hold one dumbbell vertical against your chest, elbows down.",
-            "Feet shoulder-width, sit down between your hips, chest tall.",
-            "Descend until thighs are about parallel, drive up through the heels.",
-            "4 sets of 8. Once the heaviest DB is easy for 4×8, graduate to a barbell squat."
-          ],
-          cue: "<b>Chest tall, knees track over toes.</b> Ride the goblet until you run out of load, then move to a bar." },
+      { label: "Day A — Upper Push/Pull", items: [
         { id: "l_bench", name: "DB Bench Press", dose: "4 × 8",
           steps: [
             "Lie on a flat bench, a dumbbell in each hand at chest level.",
             "Press up until arms are straight, dumbbells over the chest.",
             "Lower under control until you feel a stretch across the chest.",
-            "4 sets of 8. Keep shoulder blades pinched back on the bench."
+            "4 sets of 8, all sets before moving on. Keep shoulder blades pinched back on the bench."
           ],
           cue: "<b>Blades retracted into the bench</b> — protects the shoulders and hits the chest better." },
         { id: "l_row", name: "Barbell Row", dose: "4 × 8",
@@ -347,40 +339,32 @@ const PLAN = {
             "Lighter than flat bench; focus on the squeeze, not max load."
           ],
           cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
+        { id: "l_pulldown", name: "Lat Pulldown or Pull-ups", dose: "3 × 8–10",
+          steps: [
+            "Pulldown: grip slightly wider than shoulders, chest up, pull the bar to your collarbone.",
+            "Or pull-ups: hang from the bar, pull chest toward it, elbows drive down.",
+            "Control the return to a full stretch either way.",
+            "3 sets of 8–10. Never behind-the-neck on the pulldown."
+          ],
+          cue: "<b>Bar/chest to the front, full stretch at the top.</b> Lead with the elbows." },
         { id: "l_facepullA", name: "Face Pulls", dose: "3 × 15",
           steps: [
             "Cable or band at face height, rope or ends in each hand.",
             "Pull toward your forehead, elbows high and wide.",
             "Rotate so knuckles point behind you at the end, control back.",
-            "3 sets of 15. Added to balance all the pressing — key for your posture."
+            "3 sets of 15. Balances the pressing — key for your posture."
           ],
           cue: "<b>Added for you specifically</b> — keeps pulling ≥ pressing so your shoulders don't round." },
-        { id: "l_knee", name: "Knee Raises", dose: "3 × 10–12",
-          steps: [
-            "Hang from a bar or use a captain's chair, torso upright.",
-            "Raise your knees toward your chest by curling the pelvis up.",
-            "Lower under control — no swinging.",
-            "3 sets of 10–12. Stop if your stomach domes."
-          ],
-          cue: "<b>Curl the pelvis, don't just lift the legs.</b> No momentum. Stop the instant you see doming." },
       ]},
-      { label: "Day B", items: [
-        { id: "l_deadlift", name: "Deadlift", dose: "3 × 5",
+      { label: "Day B — Upper Push/Pull + Leg Maintenance", items: [
+        { id: "l_legmaint", name: "Goblet Squat or Deadlift (alternate weekly)", dose: "4 × 8 or 3 × 5",
           steps: [
-            "Bar over mid-foot, hinge down, flat back, grip just outside the knees.",
-            "Take the slack out of the bar, brace hard.",
-            "Drive through the floor, standing tall — bar stays close to the body.",
-            "3 sets of 5. Reset each rep. Heavy, low reps — this is a pure strength builder."
+            "Squat week: dumbbell vertical at chest, sit down between hips, chest tall, drive up.",
+            "Deadlift week: bar over mid-foot, flat back, brace hard, drive through the floor.",
+            "Alternate which one you do each week — this is maintenance, not the focus.",
+            "Goblet 4×8, or Deadlift 3×5, resetting each rep."
           ],
-          cue: "<b>Flat back, brace hard, bar close.</b> Strength lift — keep reps low and clean, never grind ugly form." },
-        { id: "l_pullup", name: "Pull-ups", dose: "4 × 6–8",
-          steps: [
-            "Hang from the bar, hands just wider than shoulders.",
-            "Pull your chest toward the bar, driving elbows down.",
-            "Control the descent to a full hang.",
-            "4 sets of 6–8. Use a band or assisted machine if needed."
-          ],
-          cue: "<b>Full range, chest to bar.</b> Assisted is fine — build the reps over time." },
+          cue: "<b>The 20% leg piece.</b> Just enough to keep the squat/deadlift and hips from regressing." },
         { id: "l_ohp", name: "Overhead Press", dose: "3 × 6",
           steps: [
             "Barbell or dumbbells at shoulder height, core braced, glutes tight.",
@@ -389,6 +373,14 @@ const PLAN = {
             "3 sets of 6. Don't lean back — brace the core instead."
           ],
           cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
+        { id: "l_dbrow", name: "DB Row or Cable Row", dose: "4 × 8",
+          steps: [
+            "DB row: one hand and knee on a bench, row the dumbbell to your hip, elbow back.",
+            "Or cable row: seated, chest up, pull to your lower ribs, squeeze the blades.",
+            "Control the return to a full stretch either way.",
+            "4 sets of 8, all sets before moving on."
+          ],
+          cue: "<b>Squeeze at the top, full stretch at the bottom.</b> Second back-builder of the day." },
         { id: "l_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10",
           steps: [
             "Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.",
@@ -405,22 +397,40 @@ const PLAN = {
             "3 sets of 15. Yes — both days. Balances the pressing volume."
           ],
           cue: "<b>Both days on purpose.</b> The single best insurance against rounding from all the pressing." },
-        { id: "l_reverse", name: "Reverse Crunch", dose: "3 × 12–15",
+      ]},
+      { label: "Core Finisher — every session, end of workout, circuit style", items: [
+        { id: "l_coredeadbug", name: "Deadbug", dose: "3 × 8/side",
+          steps: [
+            "On your back, arms up, hips/knees bent 90°, low back flat.",
+            "Exhale as you lower the opposite arm and leg, inhale as you return.",
+            "Move slow — control beats speed.",
+            "Part of the circuit — go straight into the next move after this."
+          ],
+          cue: "<b>Core finisher, round 1 of 2–3.</b> Low back never arches." },
+        { id: "l_corereverse", name: "Reverse Crunch", dose: "3 × 12–15",
           steps: [
             "Lie on your back, knees bent 90°, hands anchored beside/behind you.",
             "Curl your pelvis up, peeling the tailbone off the floor toward your chest.",
             "Lower slowly under control — no swinging.",
-            "3 sets of 12–15. Lower abs, not hip flexors."
+            "Straight into the next move — minimal rest within the circuit."
           ],
           cue: "<b>Peel the tailbone up, lower slow.</b> Stop if the stomach domes." },
-        { id: "l_plank", name: "Plank", dose: "2–3 sets",
+        { id: "l_coreplank", name: "Plank", dose: "2–3 × 30–40 sec",
           steps: [
             "Forearms under shoulders, body in a straight line head to heels.",
             "Squeeze glutes, tuck the tailbone slightly, brace the abs.",
-            "Hold 20–40 sec without letting the hips sag or pike.",
-            "2–3 sets. Quality of the brace beats total time."
+            "Hold 30–40 sec without letting the hips sag or pike.",
+            "Straight into the Pallof press to close the round."
           ],
           cue: "<b>Glutes and abs on, ribs down.</b> A tight 30 sec beats a saggy 60 sec." },
+        { id: "l_corepallof", name: "Pallof Press (band)", dose: "2 × 10/side",
+          steps: [
+            "Anchor a band at chest height, stand side-on, hold it at your chest.",
+            "Press straight out, resisting the band's pull to rotate you.",
+            "Hips and shoulders stay square the whole time.",
+            "End of the round — rest 60–90 sec, then repeat 2–3 total rounds."
+          ],
+          cue: "<b>Anti-rotation — resist the twist.</b> Closes out every session, 2–3 rounds through the whole circuit." },
       ]}
     ],
     habit: {
