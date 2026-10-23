@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0f1012">
-<title>Loadout</title>
+<title>Lift Tracker</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
@@ -139,6 +139,8 @@
   .logrow .unit { font-size: 11px; color: var(--dim); }
   .logrow .saved-flag { font-size: 10px; color: var(--good); font-weight: 700; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
   .logrow .saved-flag.show { opacity: 1; }
+  .lastweight { margin-top: 7px; font-size: 11px; color: var(--dim); }
+  .lastweight b { color: var(--iron); font-weight: 700; }
 
   /* History tab */
   .hist-toggle { display: flex; gap: 6px; margin-bottom: 16px; }
@@ -181,14 +183,7 @@
 </head>
 <body>
 <header>
-  <div class="brand">Loadout</div>
-  <div class="tagline">Lift tracker &middot; 60 / 30 / 10</div>
-  <div class="splitbar"><div></div><div></div><div></div></div>
-  <div class="splitkey">
-    <span><span class="dot" style="background:var(--upper-c)"></span>60% Upper</span>
-    <span><span class="dot" style="background:var(--abs-c)"></span>30% Abs</span>
-    <span><span class="dot" style="background:var(--lower-c)"></span>10% Lower</span>
-  </div>
+  <div class="brand">Lift Tracker</div>
 </header>
 
 <div class="tabs">
@@ -208,24 +203,24 @@ const PLAN = {
       { id: "a_bench", name: "DB Bench Press", dose: "4 × 8", cat: "upper",
         steps: ["Lie on a flat bench, a dumbbell in each hand at chest level.", "Press up until arms are straight, dumbbells over the chest.", "Lower under control until you feel a stretch across the chest.", "4 sets of 8, all sets before moving on."],
         cue: "<b>Blades retracted into the bench</b> — protects the shoulders and hits the chest better." },
-      { id: "a_row", name: "Barbell Row", dose: "4 × 8", cat: "upper",
-        steps: ["Hinge at the hips, flat back, bar hanging at knee height.", "Row the bar to your lower ribs, driving the elbows back.", "Squeeze the shoulder blades, lower under control.", "4 sets of 8 — main back builder."],
-        cue: "<b>Flat back, lead with the elbows.</b> Pull to the lower ribs, not the chest." },
-      { id: "a_incline", name: "Incline DB Press", dose: "3 × 10–12", cat: "upper",
-        steps: ["Set a bench to ~30°. Dumbbell in each hand at upper-chest level.", "Press up and slightly together, control back down.", "3 sets of 10–12 — higher reps for muscle growth.", "Lighter than flat bench; focus on the squeeze."],
-        cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
-      { id: "a_pulldown", name: "Lat Pulldown or Pull-ups", dose: "3 × 8–10", cat: "upper",
-        steps: ["Pulldown: grip slightly wider than shoulders, chest up, pull the bar to your collarbone.", "Or pull-ups: hang from the bar, pull chest toward it, elbows drive down.", "Control the return to a full stretch either way.", "3 sets of 8–10. Never behind-the-neck."],
-        cue: "<b>Bar/chest to the front, full stretch at the top.</b> Lead with the elbows." },
       { id: "a_cablecrunch", name: "Cable Crunch", dose: "3 × 12–15", cat: "abs",
         steps: ["Kneel below a high cable with a rope attachment, rope at the back of your neck/shoulders.", "Hips stay fixed — curl your torso down, bringing elbows toward your thighs.", "Squeeze the abs hard at the bottom, control back up.", "3 sets of 12–15."],
         cue: "<b>Curl from the ribs, not the hips.</b> Flexion-dominant — complements the lower-ab work below." },
+      { id: "a_row", name: "Barbell Row", dose: "4 × 8", cat: "upper",
+        steps: ["Hinge at the hips, flat back, bar hanging at knee height.", "Row the bar to your lower ribs, driving the elbows back.", "Squeeze the shoulder blades, lower under control.", "4 sets of 8 — main back builder."],
+        cue: "<b>Flat back, lead with the elbows.</b> Pull to the lower ribs, not the chest." },
       { id: "a_hanginglegraise", name: "Hanging Leg Raise", dose: "3 × 10–12", cat: "abs",
         steps: ["Hang from a pull-up bar, core braced, shoulders engaged (not a dead hang).", "Raise your legs by curling the pelvis up, not just swinging the legs.", "Lower under control — no momentum.", "3 sets of 10–12. Bend the knees if straight legs cause swinging."],
         cue: "<b>Curl the pelvis, control the descent.</b> Stop the instant you start swinging — reset instead of using momentum." },
+      { id: "a_incline", name: "Incline DB Press", dose: "3 × 10–12", cat: "upper",
+        steps: ["Set a bench to ~30°. Dumbbell in each hand at upper-chest level.", "Press up and slightly together, control back down.", "3 sets of 10–12 — higher reps for muscle growth.", "Lighter than flat bench; focus on the squeeze."],
+        cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
       { id: "a_kbtrident", name: "Kettlebell Trident", dose: "3 × 10/side", cat: "abs",
         steps: ["Set up per your usual form for this move.", "Keep the core braced and ribs down throughout.", "Controlled tempo — no rushing through reps.", "3 sets of 10 per side."],
         cue: "<b>Your call on form here</b> — keep it controlled and brace before each rep." },
+      { id: "a_pulldown", name: "Lat Pulldown or Pull-ups", dose: "3 × 8–10", cat: "upper",
+        steps: ["Pulldown: grip slightly wider than shoulders, chest up, pull the bar to your collarbone.", "Or pull-ups: hang from the bar, pull chest toward it, elbows drive down.", "Control the return to a full stretch either way.", "3 sets of 8–10. Never behind-the-neck."],
+        cue: "<b>Bar/chest to the front, full stretch at the top.</b> Lead with the elbows." },
       { id: "a_woodchop", name: "Cable Woodchop", dose: "3 × 12/side", cat: "abs",
         steps: ["Anchor high, pull down and across your body to the opposite hip, rotating the torso.", "Keep hips relatively stable — rotation comes from the core.", "Control the return, don't let the cable snap you back.", "3 sets of 12 per side."],
         cue: "<b>The oblique on the anchor side drives the rotation.</b> Alternate sides evenly." },
@@ -237,27 +232,27 @@ const PLAN = {
       { id: "b_legmaint", name: "Goblet Squat or Deadlift (alternate weekly)", dose: "4×8 or 3×5", cat: "lower",
         steps: ["Squat week: dumbbell vertical at chest, sit down between hips, chest tall, drive up.", "Deadlift week: bar over mid-foot, flat back, brace hard, drive through the floor.", "Alternate which one you do each week.", "Goblet 4×8, or Deadlift 3×5."],
         cue: "<b>The 10% leg piece.</b> Just enough to keep the squat/deadlift and hips from regressing." },
-      { id: "b_ohp", name: "Overhead Press", dose: "3 × 6", cat: "upper",
-        steps: ["Barbell or dumbbells at shoulder height, core braced, glutes tight.", "Press straight overhead, head moves slightly forward at the top.", "Lock out with the bar over your mid-foot, lower under control.", "3 sets of 6."],
-        cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
-      { id: "b_dbrow", name: "DB Row or Cable Row", dose: "4 × 8", cat: "upper",
-        steps: ["DB row: one hand and knee on a bench, row the dumbbell to your hip, elbow back.", "Or cable row: seated, chest up, pull to your lower ribs, squeeze the blades.", "Control the return to a full stretch.", "4 sets of 8."],
-        cue: "<b>Squeeze at the top, full stretch at the bottom.</b> Second back-builder of the day." },
-      { id: "b_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10", cat: "upper",
-        steps: ["Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.", "Or Barbell Curl: elbows pinned to sides, curl up, control down.", "3 sets of 8–10 — muscle-building range.", "Pick one; alternate week to week."],
-        cue: "<b>Hypertrophy reps (8–10).</b> Controlled, full range, feel the muscle." },
-      { id: "b_facepull", name: "Face Pulls", dose: "3 × 15", cat: "upper",
-        steps: ["Cable or band at face height, rope or ends in each hand.", "Pull toward your forehead, elbows high and wide.", "Rotate so knuckles point behind you at the end, control back.", "3 sets of 15 — both days, on purpose."],
-        cue: "<b>Both days on purpose.</b> Best insurance against rounding from all the pressing." },
       { id: "b_kbpullthrough", name: "Kettlebell Plank Pull-Through", dose: "3 × 10/side", cat: "abs",
         steps: ["Set up per your usual form for this move.", "Keep hips level and square — resist the urge to rotate as you move the weight.", "Controlled tempo through the full range.", "3 sets of 10 per side."],
         cue: "<b>Your call on form here</b> — the challenge is keeping the hips still while the weight moves." },
+      { id: "b_ohp", name: "Overhead Press", dose: "3 × 6", cat: "upper",
+        steps: ["Barbell or dumbbells at shoulder height, core braced, glutes tight.", "Press straight overhead, head moves slightly forward at the top.", "Lock out with the bar over your mid-foot, lower under control.", "3 sets of 6."],
+        cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
       { id: "b_rollout", name: "Ab Wheel Rollout", dose: "3 × 8–10", cat: "abs",
         steps: ["Kneel on a mat, hands on the ab wheel handles, wheel in front of you.", "Brace hard, roll out slowly, keeping your back flat — not sagging.", "Go only as far as you can keep the low back from arching.", "Roll back in, squeezing the abs. 3 sets of 8–10.", "No wheel? Sub a weighted plank (plate on your back) for the same job."],
         cue: "<b>Anti-extension — resist the arch.</b> Different skill than your other moves; braces the core against load, which carries straight into your heavier lifts." },
+      { id: "b_dbrow", name: "DB Row or Cable Row", dose: "4 × 8", cat: "upper",
+        steps: ["DB row: one hand and knee on a bench, row the dumbbell to your hip, elbow back.", "Or cable row: seated, chest up, pull to your lower ribs, squeeze the blades.", "Control the return to a full stretch.", "4 sets of 8."],
+        cue: "<b>Squeeze at the top, full stretch at the bottom.</b> Second back-builder of the day." },
+      { id: "b_facepull", name: "Face Pulls", dose: "3 × 15", cat: "upper",
+        steps: ["Cable or band at face height, rope or ends in each hand.", "Pull toward your forehead, elbows high and wide.", "Rotate so knuckles point behind you at the end, control back.", "3 sets of 15 — both days, on purpose."],
+        cue: "<b>Both days on purpose.</b> Best insurance against rounding from all the pressing." },
       { id: "b_seatedwiper", name: "Seated Windshield Wiper", dose: "3 × 10/side", cat: "abs",
         steps: ["Sit on the floor, lean back slightly on your hands behind you for support.", "Lift your legs together and sweep them side to side, under control.", "Keep the movement coming from rotating the hips/legs together, not kicking.", "3 sets of 10 per side."],
         cue: "<b>Lean back enough to stay stable, not so far you lose tension.</b> Slow and controlled beats fast swinging." },
+      { id: "b_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10", cat: "upper",
+        steps: ["Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.", "Or Barbell Curl: elbows pinned to sides, curl up, control down.", "3 sets of 8–10 — muscle-building range.", "Pick one; alternate week to week."],
+        cue: "<b>Hypertrophy reps (8–10).</b> Controlled, full range, feel the muscle." },
     ]
   }
 };
@@ -290,6 +285,15 @@ function setTodayEntry(id, patch) {
   logs[tk][id] = { ...(logs[tk][id] || {}), ...patch };
   saveAllLogs(logs);
 }
+function getLastWeight(id) {
+  const logs = loadAllLogs();
+  const tk = todayKey();
+  const dates = Object.keys(logs).filter(d => d !== tk).sort().reverse();
+  for (const d of dates) {
+    if (logs[d][id] && logs[d][id].weight) return { weight: logs[d][id].weight, date: d };
+  }
+  return null;
+}
 
 function renderTrain() {
   const day = PLAN[currentDay];
@@ -301,14 +305,9 @@ function renderTrain() {
         <div class="daybtn ${currentDay==='A'?'active':''}" data-day="A">Day A</div>
         <div class="daybtn ${currentDay==='B'?'active':''}" data-day="B">Day B</div>
       </div>
-      <div class="section-intro">Straight sets, not circuit — finish all sets of one move before the next. Rest ~90 sec–2 min on main lifts, ~45–60 sec on accessories. Log the weight you used; it feeds History.</div>`;
+      <div class="section-intro">Upper and abs alternate — finish all sets of one move, then go straight to the next, no regrouping by category. Rest ~90 sec–2 min on main lifts, ~45–60 sec on accessories. Log the weight you used; it feeds History.</div>`;
 
-  let lastCat = null;
-  day.items.forEach(item => {
-    if (item.cat !== lastCat) {
-      html += `<div class="group-label ${item.cat}"><span class="dot" style="background:var(--${item.cat}-c)"></span>${CAT_LABEL[item.cat]}</div>`;
-      lastCat = item.cat;
-    }
+  day.items.forEach((item, idx) => {
     const entry = state[item.id] || {};
     const done = entry.done ? 'done' : '';
     html += `
@@ -316,8 +315,8 @@ function renderTrain() {
         <div class="ex-top" data-toggle="${item.id}">
           <div class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#0f1012" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="ex-body">
-            <div class="ex-name">${item.name}</div>
-            <div class="ex-dose">${item.dose}</div>
+            <div class="ex-name"><span class="dot" style="background:var(--${item.cat}-c);margin-right:7px;vertical-align:middle;"></span>${idx+1}. ${item.name}</div>
+            <div class="ex-dose">${item.dose} &middot; ${CAT_LABEL[item.cat]}</div>
           </div>
           <div class="info" data-info="${item.id}">i</div>
         </div>
@@ -328,9 +327,10 @@ function renderTrain() {
         </div>
         <div class="logrow">
           <label for="w_${item.id}">Weight</label>
-          <input type="text" inputmode="decimal" id="w_${item.id}" placeholder="e.g. 35 lb or BW" value="${entry.weight || ''}" data-weight="${item.id}">
+          <input type="text" inputmode="decimal" id="w_${item.id}" placeholder="${(() => { const lw = getLastWeight(item.id); return lw ? `last: ${lw.weight}` : 'e.g. 35 lb or BW'; })()}" value="${entry.weight || ''}" data-weight="${item.id}">
           <span class="saved-flag" id="flag_${item.id}">saved</span>
         </div>
+        ${(() => { const lw = getLastWeight(item.id); return lw ? `<div class="lastweight">Last time: <b>${lw.weight}</b> on ${new Date(lw.date+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>` : ''; })()}
       </div>`;
   });
 
