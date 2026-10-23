@@ -5,648 +5,465 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#12130f">
-<title>Upright</title>
+<meta name="theme-color" content="#0f1012">
+<title>Loadout</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   :root {
-    --bg: #12130f;
-    --surface: #1b1d17;
-    --surface-2: #23261e;
-    --line: #32362a;
-    --text: #eef0e6;
-    --muted: #9ca08c;
-    --dim: #6b6f5e;
-    --sage: #a3b18a;
-    --sage-deep: #7f9268;
-    --clay: #c98a5e;
-    --done: #b6c79a;
+    --bg: #0f1012;
+    --surface: #18191c;
+    --surface-2: #202226;
+    --line: #2b2d32;
+    --text: #ecedef;
+    --muted: #93969e;
+    --dim: #5d6067;
+    --iron: #8f9bb3;
+    --iron-deep: #6b7794;
+    --rust: #c9623f;
+    --good: #7fb37a;
+    --upper-c: #8f9bb3;
+    --abs-c: #c9623f;
+    --lower-c: #6b8f6b;
   }
-  html, body {
-    background: var(--bg);
-    color: var(--text);
+  html, body { background: var(--bg); color: var(--text); min-height: 100%; }
+  body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    min-height: 100%;
-  }
-  body {
     max-width: 640px; margin: 0 auto;
-    padding: 0 20px calc(120px + env(safe-area-inset-bottom));
-    padding-top: env(safe-area-inset-top);
+    padding: env(safe-area-inset-top) 18px calc(110px + env(safe-area-inset-bottom));
   }
 
-  /* Header */
-  header { padding: 30px 0 18px; }
-  .brand {
-    display: flex; align-items: baseline; gap: 10px;
-  }
-  .brand h1 {
-    font-size: 30px; font-weight: 800; letter-spacing: -0.03em;
-    line-height: 1;
-  }
-  .brand h1 .up { color: var(--sage); }
-  .tagline {
-    font-size: 12px; color: var(--dim); letter-spacing: 0.14em;
-    text-transform: uppercase; margin-top: 8px; font-weight: 500;
-  }
+  header { padding: 28px 0 6px; }
+  .brand { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+  .tagline { font-size: 11.5px; color: var(--dim); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 7px; font-weight: 600; }
 
-  /* Streak + progress band */
-  .band {
-    margin-top: 20px; background: var(--surface);
-    border: 1px solid var(--line); border-radius: 18px;
-    padding: 18px 20px; display: flex; align-items: center; gap: 20px;
+  /* Split bar */
+  .splitbar {
+    margin-top: 20px; display: flex; height: 10px; border-radius: 6px; overflow: hidden;
+    border: 1px solid var(--line);
   }
-  .ring { position: relative; width: 60px; height: 60px; flex-shrink: 0; }
-  .ring svg { transform: rotate(-90deg); }
-  .ring .pct {
-    position: absolute; inset: 0; display: flex; align-items: center;
-    justify-content: center; font-size: 15px; font-weight: 700;
-  }
-  .band-info { flex: 1; min-width: 0; }
-  .band-info .count { font-size: 15px; font-weight: 600; }
-  .band-info .count span { color: var(--sage); }
-  .band-info .sub { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-  .streak {
-    text-align: center; flex-shrink: 0; padding-left: 18px;
-    border-left: 1px solid var(--line);
-  }
-  .streak .num { font-size: 24px; font-weight: 800; line-height: 1; color: var(--clay); }
-  .streak .lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 5px; }
+  .splitbar div:nth-child(1) { background: var(--upper-c); flex: 60; }
+  .splitbar div:nth-child(2) { background: var(--abs-c); flex: 30; }
+  .splitbar div:nth-child(3) { background: var(--lower-c); flex: 10; }
+  .splitkey { display: flex; gap: 16px; margin-top: 9px; font-size: 11px; color: var(--muted); }
+  .splitkey span { display: inline-flex; align-items: center; gap: 5px; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
 
-  /* Tabs */
+  /* Nav tabs */
   .tabs {
-    display: flex; gap: 6px; margin-top: 24px;
+    display: flex; gap: 6px; margin-top: 22px;
     background: var(--surface); border: 1px solid var(--line);
-    border-radius: 14px; padding: 5px;
+    border-radius: 13px; padding: 5px;
   }
   .tab {
-    flex: 1; text-align: center; padding: 10px 4px; border-radius: 10px;
-    font-size: 12.5px; font-weight: 600; color: var(--muted);
+    flex: 1; text-align: center; padding: 10px 4px; border-radius: 9px;
+    font-size: 13px; font-weight: 600; color: var(--muted);
     background: transparent; border: none; cursor: pointer;
-    transition: all 0.18s ease; letter-spacing: -0.01em; white-space: nowrap;
+    transition: all 0.18s ease; white-space: nowrap;
   }
-  .tab.active { background: var(--sage-deep); color: #12130f; }
+  .tab.active { background: var(--iron-deep); color: #0f1012; }
 
-  /* Section */
-  .section { margin-top: 26px; animation: fade 0.3s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px);} to {opacity:1; transform:none;} }
-  .section-intro {
-    font-size: 13px; color: var(--muted); line-height: 1.5;
-    margin-bottom: 18px; padding: 0 2px;
+  .section { margin-top: 22px; animation: fade 0.25s ease; }
+  @keyframes fade { from { opacity:0; transform: translateY(5px);} to {opacity:1; transform:none;} }
+  .section-intro { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; }
+
+  /* Day picker (for Train tab) */
+  .daypicker { display: flex; gap: 8px; margin-bottom: 18px; }
+  .daybtn {
+    flex: 1; padding: 11px 6px; text-align: center; border-radius: 12px;
+    background: var(--surface); border: 1px solid var(--line); color: var(--muted);
+    font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s;
   }
+  .daybtn.active { background: var(--iron-deep); color: #0f1012; border-color: var(--iron-deep); }
+
   .group-label {
-    font-size: 11px; font-weight: 700; color: var(--sage);
-    text-transform: uppercase; letter-spacing: 0.13em;
-    margin: 22px 2px 12px;
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em;
+    margin: 20px 2px 10px; display: flex; align-items: center; gap: 7px;
   }
-  .group-label:first-of-type { margin-top: 4px; }
+  .group-label.upper { color: var(--upper-c); }
+  .group-label.abs { color: var(--abs-c); }
+  .group-label.lower { color: var(--lower-c); }
+  .group-label:first-of-type { margin-top: 2px; }
 
   /* Exercise card */
   .ex {
-    display: flex; align-items: center; gap: 15px;
     background: var(--surface); border: 1px solid var(--line);
-    border-radius: 15px; padding: 15px 16px; margin-bottom: 9px;
-    cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.08s;
-    user-select: none;
+    border-radius: 15px; padding: 14px 15px; margin-bottom: 9px;
   }
-  .ex:active { transform: scale(0.988); }
-  .ex.done { background: var(--surface-2); border-color: transparent; }
+  .ex-top { display: flex; align-items: center; gap: 13px; cursor: pointer; user-select: none; }
   .check {
-    width: 26px; height: 26px; border-radius: 9px; flex-shrink: 0;
-    border: 2px solid var(--line); position: relative;
-    transition: all 0.18s ease;
+    width: 24px; height: 24px; border-radius: 8px; flex-shrink: 0;
+    border: 2px solid var(--line); position: relative; transition: all 0.18s ease;
   }
-  .ex.done .check { background: var(--done); border-color: var(--done); }
-  .check svg {
-    position: absolute; inset: 0; margin: auto; width: 15px; height: 15px;
-    opacity: 0; transform: scale(0.5); transition: all 0.18s ease;
-  }
+  .ex.done .check { background: var(--good); border-color: var(--good); }
+  .check svg { position: absolute; inset: 0; margin: auto; width: 14px; height: 14px; opacity: 0; transform: scale(0.5); transition: all 0.18s; }
   .ex.done .check svg { opacity: 1; transform: scale(1); }
   .ex-body { flex: 1; min-width: 0; }
-  .ex-name {
-    font-size: 15px; font-weight: 600; letter-spacing: -0.01em;
-    transition: color 0.15s;
-  }
+  .ex-name { font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
   .ex.done .ex-name { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--dim); }
-  .ex-dose { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
-  .ex.done .ex-dose { color: var(--dim); }
-  .ex-how {
-    margin-top: 0; max-height: 0; overflow: hidden;
-    transition: max-height 0.3s ease, margin-top 0.3s ease;
+  .ex-dose { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .info {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+    border: 1px solid var(--line); color: var(--muted);
+    font-size: 11px; font-weight: 700; display: flex; align-items: center;
+    justify-content: center; font-style: italic;
   }
-  .ex.show-cue .ex-how { max-height: 600px; margin-top: 12px; }
-  .how-label {
-    font-size: 10px; font-weight: 700; color: var(--sage);
-    text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px;
-  }
+  .ex.show-cue .info { background: var(--iron-deep); color: #0f1012; border-color: var(--iron-deep); }
+
+  .ex-how { max-height: 0; overflow: hidden; transition: max-height 0.3s ease, margin-top 0.3s ease; }
+  .ex.show-cue .ex-how { max-height: 500px; margin-top: 12px; }
+  .how-label { font-size: 10px; font-weight: 700; color: var(--iron); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 7px; }
   .how-steps { list-style: none; counter-reset: step; }
-  .how-steps li {
-    position: relative; padding-left: 26px; margin-bottom: 8px;
-    font-size: 12.5px; color: var(--muted); line-height: 1.5;
-  }
+  .how-steps li { position: relative; padding-left: 24px; margin-bottom: 7px; font-size: 12px; color: var(--muted); line-height: 1.5; }
   .how-steps li::before {
     counter-increment: step; content: counter(step);
-    position: absolute; left: 0; top: 0;
-    width: 18px; height: 18px; border-radius: 50%;
-    background: var(--surface); border: 1px solid var(--sage-deep);
-    color: var(--sage); font-size: 10px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
+    position: absolute; left: 0; top: 0; width: 17px; height: 17px; border-radius: 50%;
+    background: var(--bg); border: 1px solid var(--iron-deep); color: var(--iron);
+    font-size: 9.5px; font-weight: 700; display: flex; align-items: center; justify-content: center;
   }
-  .how-cue {
-    margin-top: 10px; padding: 9px 12px; background: var(--bg);
-    border-radius: 9px; border-left: 2px solid var(--clay);
-    font-size: 12px; color: var(--text); line-height: 1.5;
-  }
-  .how-cue b { color: var(--clay); font-weight: 700; }
-  .info {
-    flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
-    border: 1px solid var(--line); color: var(--muted);
-    font-size: 12px; font-weight: 700; display: flex; align-items: center;
-    justify-content: center; font-style: italic; transition: all 0.15s;
-  }
-  .ex.show-cue .info { background: var(--sage-deep); color: #12130f; border-color: var(--sage-deep); }
+  .how-cue { margin-top: 9px; padding: 9px 11px; background: var(--bg); border-radius: 9px; border-left: 2px solid var(--rust); font-size: 11.5px; color: var(--text); line-height: 1.5; }
+  .how-cue b { color: var(--rust); }
 
-  /* Habit callout */
-  .habit {
-    margin-top: 24px; background: linear-gradient(135deg, #22261c, #1a1d15);
-    border: 1px solid var(--sage-deep); border-radius: 16px; padding: 18px 20px;
+  /* Weight log row */
+  .logrow {
+    margin-top: 11px; padding-top: 11px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 8px;
   }
-  .habit h3 { font-size: 13px; color: var(--sage); letter-spacing: 0.08em; text-transform: uppercase; }
-  .habit p { font-size: 13.5px; color: var(--text); line-height: 1.55; margin-top: 9px; }
-  .habit .cue-line { color: var(--muted); font-size: 12.5px; margin-top: 8px; }
+  .logrow label { font-size: 11px; color: var(--dim); font-weight: 600; white-space: nowrap; }
+  .logrow input {
+    flex: 1; background: var(--bg); border: 1px solid var(--line); border-radius: 9px;
+    color: var(--text); font-size: 14px; font-weight: 600; padding: 8px 10px;
+    font-family: inherit; min-width: 0;
+  }
+  .logrow input:focus { outline: none; border-color: var(--iron-deep); }
+  .logrow .unit { font-size: 11px; color: var(--dim); }
+  .logrow .saved-flag { font-size: 10px; color: var(--good); font-weight: 700; opacity: 0; transition: opacity 0.3s; white-space: nowrap; }
+  .logrow .saved-flag.show { opacity: 1; }
 
-  /* Reset button */
-  .reset-wrap { margin-top: 30px; text-align: center; }
+  /* History tab */
+  .hist-toggle { display: flex; gap: 6px; margin-bottom: 16px; }
+  .hist-toggle button {
+    flex: 1; padding: 9px; border-radius: 10px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--muted); font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  .hist-toggle button.active { background: var(--iron-deep); color: #0f1012; border-color: var(--iron-deep); }
+  .hist-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 15px 16px; margin-bottom: 10px;
+  }
+  .hist-ex-name { font-size: 13.5px; font-weight: 700; }
+  .hist-entries { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+  .hist-entry { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); }
+  .hist-entry .d { color: var(--dim); }
+  .hist-entry .w { color: var(--text); font-weight: 600; }
+  .hist-empty { font-size: 12.5px; color: var(--dim); text-align: center; padding: 30px 0; }
+  .hist-trend { font-size: 10.5px; margin-top: 6px; font-weight: 700; }
+  .trend-up { color: var(--good); }
+  .trend-flat { color: var(--dim); }
+  .trend-down { color: var(--rust); }
+
+  .summary-band {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 15px;
+    padding: 16px 18px; margin-bottom: 16px; display: flex; gap: 22px;
+  }
+  .summary-stat .num { font-size: 22px; font-weight: 800; line-height: 1; }
+  .summary-stat .lbl { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 5px; }
+
+  .reset-wrap { margin-top: 24px; text-align: center; }
   .reset {
     background: transparent; border: 1px solid var(--line); color: var(--muted);
-    font-size: 13px; font-weight: 500; padding: 11px 22px; border-radius: 11px;
-    cursor: pointer; transition: all 0.15s;
+    font-size: 12.5px; font-weight: 500; padding: 10px 20px; border-radius: 10px; cursor: pointer;
   }
   .reset:active { background: var(--surface); }
 
-  /* Celebration bar */
-  .cheer {
-    position: fixed; left: 50%; transform: translateX(-50%) translateY(140%);
-    bottom: calc(24px + env(safe-area-inset-bottom));
-    background: var(--sage); color: #12130f;
-    padding: 13px 24px; border-radius: 14px; font-weight: 700; font-size: 14px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.4); transition: transform 0.4s cubic-bezier(.2,.9,.3,1.3);
-    z-index: 50; white-space: nowrap;
-  }
-  .cheer.show { transform: translateX(-50%) translateY(0); }
-
-  footer { text-align: center; font-size: 11px; color: var(--dim); margin-top: 34px; line-height: 1.6; }
+  footer { text-align: center; font-size: 10.5px; color: var(--dim); margin-top: 30px; line-height: 1.6; }
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">
-    <h1><span class="up">Up</span>right</h1>
+  <div class="brand">Loadout</div>
+  <div class="tagline">Lift tracker &middot; 60 / 30 / 10</div>
+  <div class="splitbar"><div></div><div></div><div></div></div>
+  <div class="splitkey">
+    <span><span class="dot" style="background:var(--upper-c)"></span>60% Upper</span>
+    <span><span class="dot" style="background:var(--abs-c)"></span>30% Abs</span>
+    <span><span class="dot" style="background:var(--lower-c)"></span>10% Lower</span>
   </div>
-  <div class="tagline">Daily posture &middot; back &middot; core</div>
 </header>
 
-<div class="band">
-  <div class="ring">
-    <svg width="60" height="60">
-      <circle cx="30" cy="30" r="26" fill="none" stroke="#32362a" stroke-width="6"/>
-      <circle id="ringProg" cx="30" cy="30" r="26" fill="none" stroke="#a3b18a" stroke-width="6"
-              stroke-linecap="round" stroke-dasharray="163.4" stroke-dashoffset="163.4"/>
-    </svg>
-    <div class="pct" id="ringPct">0%</div>
-  </div>
-  <div class="band-info">
-    <div class="count"><span id="doneCount">0</span> of <span id="totalCount">0</span> done today</div>
-    <div class="sub" id="bandSub">Tap an exercise to check it off</div>
-  </div>
-  <div class="streak">
-    <div class="num" id="streakNum">0</div>
-    <div class="lbl">day streak</div>
-  </div>
-</div>
-
 <div class="tabs">
-  <button class="tab active" data-tab="daily">Daily</button>
-  <button class="tab" data-tab="lift">Lift</button>
-  <button class="tab" data-tab="gym">Posture Gym</button>
+  <button class="tab active" data-tab="train">Train</button>
+  <button class="tab" data-tab="history">History</button>
 </div>
 
 <div id="content"></div>
 
-<div class="cheer" id="cheer">All done today. Nice work.</div>
-
-<footer>
-  Progress saves on this device.<br>
-  Consistency beats intensity — a few minutes every day is the whole game.
-</footer>
+<footer>Weights save on this device, organized by day logged.<br>Progressive overload — add a little weight or a rep whenever you hit the top of a range.</footer>
 
 <script>
 const PLAN = {
-  daily: {
-    intro: "About 8 minutes. Do it once a day, any time — no equipment beyond a rolled towel. Tap the i on any exercise for how to do it.",
-    groups: [
-      { label: "The Routine", items: [
-        { id: "d_chin", name: "Chin Tucks", dose: "8 reps · hold 3 sec",
-          steps: [
-            "Sit, stand, or lie on your back (lying adds light resistance — good for strengthening).",
-            "Without dropping your chin, slide your head straight back — like making a double chin.",
-            "Keep your eyes level the whole time; you're gliding back, not nodding down.",
-            "Hold 3 seconds, then fully release. Repeat 8 times."
-          ],
-          cue: "<b>Feel it at the base of the skull.</b> If your chin drops it's a neck curl, not a tuck. Lying down, glide the back of the head along the floor. Fixes forward head." },
-        { id: "d_slide", name: "Floor Slides", dose: "10 slow reps",
-          steps: [
-            "Lie on your back, knees bent, feet flat. Press your low back into the floor.",
-            "Put your arms in a goalpost — elbows bent, backs of hands on the floor.",
-            "Slowly slide your arms overhead, keeping backs of hands and wrists on the floor.",
-            "Slide back down, driving the shoulder blades down and in at the bottom."
-          ],
-          cue: "<b>Low back stays flat the whole time.</b> Only go as far as your hands stay on the floor — that's your honest range." },
-        { id: "d_thoracic", name: "Thoracic Extension", dose: "1–2 min over towel",
-          steps: [
-            "Roll a towel and lay it across your mid-back, between the shoulder blades (nipple line).",
-            "Lie back over it, knees bent, feet flat. Cradle your head in your hands or reach arms overhead.",
-            "Let your mid-back arch gently over the towel. Breathe — each exhale opens it a little more.",
-            "Move the towel up or down an inch or two to hit different spots along the mid-back."
-          ],
-          cue: "<b>Arch the mid-back, not the low back.</b> Gentle chin tuck, ribs down. Feel it between the blades — if it's in your low back, the towel's too low." },
-        { id: "d_tw", name: "Prone T + W Raises", dose: "8 each",
-          steps: [
-            "Lie face down, forehead resting down, neck long.",
-            "T: arms straight out to the sides. Lift them off the floor, squeezing the blades together.",
-            "W: bend elbows, pull them down toward your ribs, squeezing the blades down and in.",
-            "Pause 1–2 sec at the top of each. 8 reps of each shape."
-          ],
-          cue: "<b>Blades down AND in</b> — toward opposite back pockets. Don't shrug toward your ears. Light and controlled." },
-        { id: "d_cobra", name: "Prone Cobra Hold", dose: "2 × 20 sec",
-          steps: [
-            "Lie face down, arms by your sides, palms down.",
-            "Lift your chest off the floor, rotating your palms out so thumbs point up.",
-            "Pinch your shoulder blades together, tuck your chin, keep the neck long.",
-            "Keep eyes on the floor a foot ahead (~45° gaze) — head in line with the spine, not craned up.",
-            "Hold 20 seconds, squeezing the whole time. Rest, repeat once."
-          ],
-          cue: "<b>Chin tucked, eyes down, neck long.</b> If you feel pinching at the back of the neck, your head's tipped too far back. Lift from the upper back, not the low back." },
-        { id: "d_pec", name: "Doorway Pec Stretch", dose: "30 sec / side",
-          steps: [
-            "Stand in a doorway. Place one forearm flat on the frame, elbow at shoulder height.",
-            "Step through the doorway with the same-side foot.",
-            "Rotate your chest away from that arm until you feel a stretch across the chest/front of shoulder.",
-            "Hold 30 seconds, breathing. Switch sides."
-          ],
-          cue: "<b>Releases the tight chest</b> that pulls you into rounding. Strengthening the back won't win until the front lets go." },
-        { id: "d_deadbug", name: "Deadbug", dose: "8 / side",
-          steps: [
-            "Lie on your back, arms reaching at the ceiling, hips and knees bent 90° (feet up).",
-            "Press your low back flat into the floor — no gap. Take a breath in here.",
-            "Exhale slowly as you lower the opposite arm and leg toward the floor, keeping the back flat.",
-            "Inhale as you return, then switch sides. Move slow — control beats speed. 8 per side."
-          ],
-          cue: "<b>Exhale as you extend, inhale as you return.</b> The exhale locks the low back flat. If the back lifts off the floor, use a smaller range." },
-      ]}
-    ],
-    habit: {
-      title: "The habit that matters most",
-      body: "Every hour or so when you catch yourself slouching, reset and hold 10 seconds. This does more than the exercises — your back hurts because it's stuck in a bad position all day, not because it's weak.",
-      cue: "ribs down · blades back and down · chin tucked · long neck"
-    }
+  A: {
+    label: "Day A",
+    items: [
+      { id: "a_bench", name: "DB Bench Press", dose: "4 × 8", cat: "upper",
+        steps: ["Lie on a flat bench, a dumbbell in each hand at chest level.", "Press up until arms are straight, dumbbells over the chest.", "Lower under control until you feel a stretch across the chest.", "4 sets of 8, all sets before moving on."],
+        cue: "<b>Blades retracted into the bench</b> — protects the shoulders and hits the chest better." },
+      { id: "a_row", name: "Barbell Row", dose: "4 × 8", cat: "upper",
+        steps: ["Hinge at the hips, flat back, bar hanging at knee height.", "Row the bar to your lower ribs, driving the elbows back.", "Squeeze the shoulder blades, lower under control.", "4 sets of 8 — main back builder."],
+        cue: "<b>Flat back, lead with the elbows.</b> Pull to the lower ribs, not the chest." },
+      { id: "a_incline", name: "Incline DB Press", dose: "3 × 10–12", cat: "upper",
+        steps: ["Set a bench to ~30°. Dumbbell in each hand at upper-chest level.", "Press up and slightly together, control back down.", "3 sets of 10–12 — higher reps for muscle growth.", "Lighter than flat bench; focus on the squeeze."],
+        cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
+      { id: "a_pulldown", name: "Lat Pulldown or Pull-ups", dose: "3 × 8–10", cat: "upper",
+        steps: ["Pulldown: grip slightly wider than shoulders, chest up, pull the bar to your collarbone.", "Or pull-ups: hang from the bar, pull chest toward it, elbows drive down.", "Control the return to a full stretch either way.", "3 sets of 8–10. Never behind-the-neck."],
+        cue: "<b>Bar/chest to the front, full stretch at the top.</b> Lead with the elbows." },
+      { id: "a_cablecrunch", name: "Cable Crunch", dose: "3 × 12–15", cat: "abs",
+        steps: ["Kneel below a high cable with a rope attachment, rope at the back of your neck/shoulders.", "Hips stay fixed — curl your torso down, bringing elbows toward your thighs.", "Squeeze the abs hard at the bottom, control back up.", "3 sets of 12–15."],
+        cue: "<b>Curl from the ribs, not the hips.</b> Flexion-dominant — complements the lower-ab work below." },
+      { id: "a_hanginglegraise", name: "Hanging Leg Raise", dose: "3 × 10–12", cat: "abs",
+        steps: ["Hang from a pull-up bar, core braced, shoulders engaged (not a dead hang).", "Raise your legs by curling the pelvis up, not just swinging the legs.", "Lower under control — no momentum.", "3 sets of 10–12. Bend the knees if straight legs cause swinging."],
+        cue: "<b>Curl the pelvis, control the descent.</b> Stop the instant you start swinging — reset instead of using momentum." },
+      { id: "a_kbtrident", name: "Kettlebell Trident", dose: "3 × 10/side", cat: "abs",
+        steps: ["Set up per your usual form for this move.", "Keep the core braced and ribs down throughout.", "Controlled tempo — no rushing through reps.", "3 sets of 10 per side."],
+        cue: "<b>Your call on form here</b> — keep it controlled and brace before each rep." },
+      { id: "a_woodchop", name: "Cable Woodchop", dose: "3 × 12/side", cat: "abs",
+        steps: ["Anchor high, pull down and across your body to the opposite hip, rotating the torso.", "Keep hips relatively stable — rotation comes from the core.", "Control the return, don't let the cable snap you back.", "3 sets of 12 per side."],
+        cue: "<b>The oblique on the anchor side drives the rotation.</b> Alternate sides evenly." },
+    ]
   },
-  lift: {
-    intro: "80% upper body, 3×/week, alternating Day A / Day B (~45–55 min). Schedule: Mon A · Wed B · Fri A, then next week flips to Mon B · Wed A · Fri B. Do all sets of one exercise before moving to the next — straight sets, not circuit — except the core finisher, which is a circuit. Rest ~90 sec–2 min on the main lifts, ~45–60 sec on accessories. Add a little weight or a rep whenever you hit the top of a range.",
-    groups: [
-      { label: "Day A — Upper Push/Pull", items: [
-        { id: "l_bench", name: "DB Bench Press", dose: "4 × 8",
-          steps: [
-            "Lie on a flat bench, a dumbbell in each hand at chest level.",
-            "Press up until arms are straight, dumbbells over the chest.",
-            "Lower under control until you feel a stretch across the chest.",
-            "4 sets of 8, all sets before moving on. Keep shoulder blades pinched back on the bench."
-          ],
-          cue: "<b>Blades retracted into the bench</b> — protects the shoulders and hits the chest better." },
-        { id: "l_row", name: "Barbell Row", dose: "4 × 8",
-          steps: [
-            "Hinge at the hips, flat back, bar hanging at knee height.",
-            "Row the bar to your lower ribs, driving the elbows back.",
-            "Squeeze the shoulder blades, lower under control.",
-            "4 sets of 8. This is your main back builder — keep it strict."
-          ],
-          cue: "<b>Flat back, lead with the elbows.</b> Pull to the lower ribs, not the chest." },
-        { id: "l_incline", name: "Incline DB Press", dose: "3 × 10–12",
-          steps: [
-            "Set a bench to ~30°. Dumbbell in each hand at upper-chest level.",
-            "Press up and slightly together, control back down.",
-            "3 sets of 10–12 — higher reps here for muscle growth.",
-            "Lighter than flat bench; focus on the squeeze, not max load."
-          ],
-          cue: "<b>Hypertrophy reps (10–12).</b> Accessory lift — chase the pump, not a 1-rep max." },
-        { id: "l_pulldown", name: "Lat Pulldown or Pull-ups", dose: "3 × 8–10",
-          steps: [
-            "Pulldown: grip slightly wider than shoulders, chest up, pull the bar to your collarbone.",
-            "Or pull-ups: hang from the bar, pull chest toward it, elbows drive down.",
-            "Control the return to a full stretch either way.",
-            "3 sets of 8–10. Never behind-the-neck on the pulldown."
-          ],
-          cue: "<b>Bar/chest to the front, full stretch at the top.</b> Lead with the elbows." },
-        { id: "l_facepullA", name: "Face Pulls", dose: "3 × 15",
-          steps: [
-            "Cable or band at face height, rope or ends in each hand.",
-            "Pull toward your forehead, elbows high and wide.",
-            "Rotate so knuckles point behind you at the end, control back.",
-            "3 sets of 15. Balances the pressing — key for your posture."
-          ],
-          cue: "<b>Added for you specifically</b> — keeps pulling ≥ pressing so your shoulders don't round." },
-      ]},
-      { label: "Day B — Upper Push/Pull + Leg Maintenance", items: [
-        { id: "l_legmaint", name: "Goblet Squat or Deadlift (alternate weekly)", dose: "4 × 8 or 3 × 5",
-          steps: [
-            "Squat week: dumbbell vertical at chest, sit down between hips, chest tall, drive up.",
-            "Deadlift week: bar over mid-foot, flat back, brace hard, drive through the floor.",
-            "Alternate which one you do each week — this is maintenance, not the focus.",
-            "Goblet 4×8, or Deadlift 3×5, resetting each rep."
-          ],
-          cue: "<b>The 20% leg piece.</b> Just enough to keep the squat/deadlift and hips from regressing." },
-        { id: "l_ohp", name: "Overhead Press", dose: "3 × 6",
-          steps: [
-            "Barbell or dumbbells at shoulder height, core braced, glutes tight.",
-            "Press straight overhead, head moves slightly forward at the top.",
-            "Lock out with the bar over your mid-foot, lower under control.",
-            "3 sets of 6. Don't lean back — brace the core instead."
-          ],
-          cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
-        { id: "l_dbrow", name: "DB Row or Cable Row", dose: "4 × 8",
-          steps: [
-            "DB row: one hand and knee on a bench, row the dumbbell to your hip, elbow back.",
-            "Or cable row: seated, chest up, pull to your lower ribs, squeeze the blades.",
-            "Control the return to a full stretch either way.",
-            "4 sets of 8, all sets before moving on."
-          ],
-          cue: "<b>Squeeze at the top, full stretch at the bottom.</b> Second back-builder of the day." },
-        { id: "l_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10",
-          steps: [
-            "Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.",
-            "Or Barbell Curl: elbows pinned to sides, curl up, control down.",
-            "3 sets of 8–10 — muscle-building range.",
-            "Pick one; alternate week to week if you like."
-          ],
-          cue: "<b>Hypertrophy reps (8–10).</b> Accessory — controlled, full range, feel the muscle." },
-        { id: "l_facepullB", name: "Face Pulls", dose: "3 × 15",
-          steps: [
-            "Cable or band at face height, rope or ends in each hand.",
-            "Pull toward your forehead, elbows high and wide.",
-            "Rotate so knuckles point behind you at the end, control back.",
-            "3 sets of 15. Yes — both days. Balances the pressing volume."
-          ],
-          cue: "<b>Both days on purpose.</b> The single best insurance against rounding from all the pressing." },
-      ]},
-      { label: "Core Finisher — every session, end of workout, circuit style", items: [
-        { id: "l_coredeadbug", name: "Deadbug", dose: "3 × 8/side",
-          steps: [
-            "On your back, arms up, hips/knees bent 90°, low back flat.",
-            "Exhale as you lower the opposite arm and leg, inhale as you return.",
-            "Move slow — control beats speed.",
-            "Part of the circuit — go straight into the next move after this."
-          ],
-          cue: "<b>Core finisher, round 1 of 2–3.</b> Low back never arches." },
-        { id: "l_corereverse", name: "Reverse Crunch", dose: "3 × 12–15",
-          steps: [
-            "Lie on your back, knees bent 90°, hands anchored beside/behind you.",
-            "Curl your pelvis up, peeling the tailbone off the floor toward your chest.",
-            "Lower slowly under control — no swinging.",
-            "Straight into the next move — minimal rest within the circuit."
-          ],
-          cue: "<b>Peel the tailbone up, lower slow.</b> Stop if the stomach domes." },
-        { id: "l_coreplank", name: "Plank", dose: "2–3 × 30–40 sec",
-          steps: [
-            "Forearms under shoulders, body in a straight line head to heels.",
-            "Squeeze glutes, tuck the tailbone slightly, brace the abs.",
-            "Hold 30–40 sec without letting the hips sag or pike.",
-            "Straight into the Pallof press to close the round."
-          ],
-          cue: "<b>Glutes and abs on, ribs down.</b> A tight 30 sec beats a saggy 60 sec." },
-        { id: "l_corepallof", name: "Pallof Press (band)", dose: "2 × 10/side",
-          steps: [
-            "Anchor a band at chest height, stand side-on, hold it at your chest.",
-            "Press straight out, resisting the band's pull to rotate you.",
-            "Hips and shoulders stay square the whole time.",
-            "End of the round — rest 60–90 sec, then repeat 2–3 total rounds."
-          ],
-          cue: "<b>Anti-rotation — resist the twist.</b> Closes out every session, 2–3 rounds through the whole circuit." },
-      ]}
-    ],
-    habit: {
-      title: "The two changes that matter most",
-      body: "Face pulls on both days keep your pulling ahead of your pressing — that's what protects your posture while you build. And add a little weight or a rep whenever you hit the top of a range. Progressive overload is what actually builds the base.",
-      cue: "strength reps on the big lifts · 8–12 muscle reps on accessories · pull ≥ press"
-    }
-  },
-  gym: {
-    intro: "Add 2–3× per week when you have equipment. Keep doing the daily routine too — the gym work doesn't replace the mobility and postural habit. Tap the i for how-to.",
-    groups: [
-      { label: "Pull — the priority", items: [
-        { id: "g_row", name: "Chest-Supported Row", dose: "3 × 10–12",
-          steps: [
-            "Set an incline bench, lie chest-down against it, a dumbbell in each hand hanging below.",
-            "Let the shoulder blades stretch forward at the bottom.",
-            "Row by driving your elbows back and up, squeezing the blades together and down.",
-            "Pause 1 sec at the top, lower under control. 3 sets of 10–12."
-          ],
-          cue: "<b>Lead with the elbow, not the hand.</b> The #1 posture builder — chest support removes cheating." },
-        { id: "g_face", name: "Face Pulls", dose: "3 × 15",
-          steps: [
-            "Set a cable (or band) at face height with a rope attachment.",
-            "Step back, arms straight, palms facing in.",
-            "Pull the rope toward your forehead, elbows high and wide.",
-            "At the end, rotate so your knuckles point behind you. Control back. 3 sets of 15."
-          ],
-          cue: "<b>Best single move for between-blade pain.</b> Elbows high, rotate out at the end. Do these religiously." },
-        { id: "g_pulldown", name: "Lat Pulldown", dose: "3 × 8–10",
-          steps: [
-            "Grip the bar slightly wider than shoulders, sit with thighs anchored.",
-            "Chest up, slight lean back. Pull the bar to your collarbone.",
-            "Drive elbows down toward your ribs, squeezing the lats.",
-            "Control the bar back up to a full stretch. 3 sets of 8–10."
-          ],
-          cue: "<b>Bar to the collarbone — never behind the neck.</b> Chest stays up throughout." },
-        { id: "g_reardelt", name: "Rear Delt Fly / Cable Crossover", dose: "3 × 12–15",
-          steps: [
-            "Best version: set both cable pulleys to shoulder height. Grab left handle with right hand, right handle with left, so the cables cross (an X).",
-            "Slight constant bend in the elbows, sweep your arms open and back in a wide arc.",
-            "Lead with the backs of the hands / pinkies; squeeze the blades and rear delts, pause behind you.",
-            "Control the return. (No cables? Reverse pec deck or hinged-over dumbbells work too.) 3 × 12–15."
-          ],
-          cue: "<b>Light weight, feel the squeeze.</b> Crossed cables give longer range and constant tension than the machine. Ribs down, don't shrug." },
-      ]},
-      { label: "Upper back detail", items: [
-        { id: "g_ytw", name: "Incline Y-T-W Raises", dose: "2 × 10–12",
-          steps: [
-            "Set the bench to a shallow incline (~30°). Lie chest-down, chest on the pad, very light dumbbells (5–10 lb).",
-            "Y: raise arms overhead in a Y, thumbs up, squeezing the lower traps.",
-            "T and W: same shapes as your floor version, now loaded.",
-            "Pause and squeeze the blades at the top of each. 2 sets of 10–12 per shape."
-          ],
-          cue: "<b>~30° bench, light dumbbells — these are for the small stabilizers, not ego.</b> Chest support removes the cheating." },
-      ]},
-      { label: "Core", items: [
-        { id: "g_pallof", name: "Cable Pallof Press", dose: "3 × 10 / side",
-          steps: [
-            "Set a cable at chest height. Stand side-on, hold the handle at your chest with both hands.",
-            "Brace your core. Press the handle straight out in front of you.",
-            "Resist the cable trying to rotate you — hips and shoulders stay square.",
-            "Hold 1–2 sec, return to chest. 3 sets of 10 per side."
-          ],
-          cue: "<b>Anti-rotation — resist the twist.</b> The deep-core move your home plan couldn't fully load." },
-        { id: "g_carry", name: "Suitcase Carry", dose: "3 × 30 sec / side",
-          steps: [
-            "Hold one heavy dumbbell at your side, like a suitcase.",
-            "Stand tall — ribs down, blades back, don't lean toward or away from the weight.",
-            "Walk slowly and controlled for 30 seconds, staying upright.",
-            "Switch sides. 3 sets per side."
-          ],
-          cue: "<b>Walk tall, don't lean.</b> One of the best real-world core + posture builders there is." },
-      ]}
-    ],
-    habit: {
-      title: "If you only did two",
-      body: "Rows and face pulls. Rows build the back, face pulls fix the posture and the pain. Everything else is refinement on top of those two — don't overcomplicate it.",
-      cue: "squeeze and pause on every rep · don't shrug · full range"
-    }
+  B: {
+    label: "Day B",
+    items: [
+      { id: "b_legmaint", name: "Goblet Squat or Deadlift (alternate weekly)", dose: "4×8 or 3×5", cat: "lower",
+        steps: ["Squat week: dumbbell vertical at chest, sit down between hips, chest tall, drive up.", "Deadlift week: bar over mid-foot, flat back, brace hard, drive through the floor.", "Alternate which one you do each week.", "Goblet 4×8, or Deadlift 3×5."],
+        cue: "<b>The 10% leg piece.</b> Just enough to keep the squat/deadlift and hips from regressing." },
+      { id: "b_ohp", name: "Overhead Press", dose: "3 × 6", cat: "upper",
+        steps: ["Barbell or dumbbells at shoulder height, core braced, glutes tight.", "Press straight overhead, head moves slightly forward at the top.", "Lock out with the bar over your mid-foot, lower under control.", "3 sets of 6."],
+        cue: "<b>Brace the core, don't arch the low back.</b> Ribs down as you press." },
+      { id: "b_dbrow", name: "DB Row or Cable Row", dose: "4 × 8", cat: "upper",
+        steps: ["DB row: one hand and knee on a bench, row the dumbbell to your hip, elbow back.", "Or cable row: seated, chest up, pull to your lower ribs, squeeze the blades.", "Control the return to a full stretch.", "4 sets of 8."],
+        cue: "<b>Squeeze at the top, full stretch at the bottom.</b> Second back-builder of the day." },
+      { id: "b_dips", name: "Dips or Barbell Curl", dose: "3 × 8–10", cat: "upper",
+        steps: ["Dips: lower until upper arms are ~parallel, press back up, slight forward lean for chest.", "Or Barbell Curl: elbows pinned to sides, curl up, control down.", "3 sets of 8–10 — muscle-building range.", "Pick one; alternate week to week."],
+        cue: "<b>Hypertrophy reps (8–10).</b> Controlled, full range, feel the muscle." },
+      { id: "b_facepull", name: "Face Pulls", dose: "3 × 15", cat: "upper",
+        steps: ["Cable or band at face height, rope or ends in each hand.", "Pull toward your forehead, elbows high and wide.", "Rotate so knuckles point behind you at the end, control back.", "3 sets of 15 — both days, on purpose."],
+        cue: "<b>Both days on purpose.</b> Best insurance against rounding from all the pressing." },
+      { id: "b_kbpullthrough", name: "Kettlebell Plank Pull-Through", dose: "3 × 10/side", cat: "abs",
+        steps: ["Set up per your usual form for this move.", "Keep hips level and square — resist the urge to rotate as you move the weight.", "Controlled tempo through the full range.", "3 sets of 10 per side."],
+        cue: "<b>Your call on form here</b> — the challenge is keeping the hips still while the weight moves." },
+      { id: "b_rollout", name: "Ab Wheel Rollout", dose: "3 × 8–10", cat: "abs",
+        steps: ["Kneel on a mat, hands on the ab wheel handles, wheel in front of you.", "Brace hard, roll out slowly, keeping your back flat — not sagging.", "Go only as far as you can keep the low back from arching.", "Roll back in, squeezing the abs. 3 sets of 8–10.", "No wheel? Sub a weighted plank (plate on your back) for the same job."],
+        cue: "<b>Anti-extension — resist the arch.</b> Different skill than your other moves; braces the core against load, which carries straight into your heavier lifts." },
+      { id: "b_seatedwiper", name: "Seated Windshield Wiper", dose: "3 × 10/side", cat: "abs",
+        steps: ["Sit on the floor, lean back slightly on your hands behind you for support.", "Lift your legs together and sweep them side to side, under control.", "Keep the movement coming from rotating the hips/legs together, not kicking.", "3 sets of 10 per side."],
+        cue: "<b>Lean back enough to stay stable, not so far you lose tension.</b> Slow and controlled beats fast swinging." },
+    ]
   }
 };
 
-const CIRC = 163.4;
-let currentTab = 'daily';
+const CAT_LABEL = { upper: "Upper Body", abs: "Abs", lower: "Lower Body" };
+let currentTab = 'train';
+let currentDay = 'A';
+let historyView = 'week';
 
 function todayKey() {
   const d = new Date();
-  return `upright_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
-function loadDay() {
-  try { return JSON.parse(localStorage.getItem(todayKey()) || '{}'); }
-  catch { return {}; }
+function loadAllLogs() {
+  try { return JSON.parse(localStorage.getItem('loadout_logs') || '{}'); } catch { return {}; }
 }
-function saveDay(state) {
-  try { localStorage.setItem(todayKey(), JSON.stringify(state)); } catch {}
+function saveAllLogs(logs) {
+  try { localStorage.setItem('loadout_logs', JSON.stringify(logs)); } catch {}
+}
+// logs shape: { "2026-10-23": { "a_bench": { weight: "135", done: true }, ... } }
+
+function getTodayState() {
+  const logs = loadAllLogs();
+  return logs[todayKey()] || {};
+}
+function setTodayEntry(id, patch) {
+  const logs = loadAllLogs();
+  const tk = todayKey();
+  if (!logs[tk]) logs[tk] = {};
+  logs[tk][id] = { ...(logs[tk][id] || {}), ...patch };
+  saveAllLogs(logs);
 }
 
-// Streak logic
-function updateStreak() {
-  try {
-    const daily = PLAN.daily.groups.flatMap(g => g.items).map(i => i.id);
-    const state = loadDay();
-    const allDailyDone = daily.every(id => state[id]);
-    const meta = JSON.parse(localStorage.getItem('upright_meta') || '{}');
-    const tk = todayKey().replace('upright_','');
-
-    if (allDailyDone && meta.lastDone !== tk) {
-      const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-      const yk = `${yesterday.getFullYear()}-${String(yesterday.getMonth()+1).padStart(2,'0')}-${String(yesterday.getDate()).padStart(2,'0')}`;
-      meta.streak = (meta.lastDone === yk) ? (meta.streak||0)+1 : 1;
-      meta.lastDone = tk;
-      localStorage.setItem('upright_meta', JSON.stringify(meta));
-    }
-    return meta.streak || 0;
-  } catch { return 0; }
-}
-
-function render() {
-  const plan = PLAN[currentTab];
-  const state = loadDay();
+function renderTrain() {
+  const day = PLAN[currentDay];
+  const state = getTodayState();
   const c = document.getElementById('content');
-  let html = `<div class="section"><div class="section-intro">${plan.intro}</div>`;
+  let html = `
+    <div class="section">
+      <div class="daypicker">
+        <div class="daybtn ${currentDay==='A'?'active':''}" data-day="A">Day A</div>
+        <div class="daybtn ${currentDay==='B'?'active':''}" data-day="B">Day B</div>
+      </div>
+      <div class="section-intro">Straight sets, not circuit — finish all sets of one move before the next. Rest ~90 sec–2 min on main lifts, ~45–60 sec on accessories. Log the weight you used; it feeds History.</div>`;
 
-  plan.groups.forEach(g => {
-    html += `<div class="group-label">${g.label}</div>`;
-    g.items.forEach(item => {
-      const done = state[item.id] ? 'done' : '';
-      html += `
-        <div class="ex ${done}" data-id="${item.id}">
-          <div class="check">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#12130f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
+  let lastCat = null;
+  day.items.forEach(item => {
+    if (item.cat !== lastCat) {
+      html += `<div class="group-label ${item.cat}"><span class="dot" style="background:var(--${item.cat}-c)"></span>${CAT_LABEL[item.cat]}</div>`;
+      lastCat = item.cat;
+    }
+    const entry = state[item.id] || {};
+    const done = entry.done ? 'done' : '';
+    html += `
+      <div class="ex ${done}" data-id="${item.id}">
+        <div class="ex-top" data-toggle="${item.id}">
+          <div class="check"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#0f1012" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
           <div class="ex-body">
             <div class="ex-name">${item.name}</div>
             <div class="ex-dose">${item.dose}</div>
-            <div class="ex-how">
-              <div class="how-label">How to do it</div>
-              <ol class="how-steps">${item.steps.map(s => `<li>${s}</li>`).join('')}</ol>
-              <div class="how-cue">${item.cue}</div>
-            </div>
           </div>
           <div class="info" data-info="${item.id}">i</div>
-        </div>`;
-    });
+        </div>
+        <div class="ex-how">
+          <div class="how-label">How to do it</div>
+          <ol class="how-steps">${item.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+          <div class="how-cue">${item.cue}</div>
+        </div>
+        <div class="logrow">
+          <label for="w_${item.id}">Weight</label>
+          <input type="text" inputmode="decimal" id="w_${item.id}" placeholder="e.g. 35 lb or BW" value="${entry.weight || ''}" data-weight="${item.id}">
+          <span class="saved-flag" id="flag_${item.id}">saved</span>
+        </div>
+      </div>`;
   });
 
-  html += `
-    <div class="habit">
-      <h3>${plan.habit.title}</h3>
-      <p>${plan.habit.body}</p>
-      <div class="cue-line">${plan.habit.cue}</div>
-    </div>
-    <div class="reset-wrap"><button class="reset" id="resetBtn">Reset today</button></div>
-  </div>`;
+  html += `<div class="reset-wrap"><button class="reset" id="resetBtn">Clear today's log</button></div></div>`;
   c.innerHTML = html;
-  attach();
-  updateBand();
+  attachTrain();
 }
 
-function attach() {
-  document.querySelectorAll('.ex').forEach(el => {
+function attachTrain() {
+  document.querySelectorAll('.daybtn').forEach(b => {
+    b.addEventListener('click', () => { currentDay = b.dataset.day; renderTrain(); });
+  });
+  document.querySelectorAll('[data-toggle]').forEach(el => {
     el.addEventListener('click', (e) => {
       if (e.target.closest('.info')) return;
-      const id = el.dataset.id;
-      const state = loadDay();
-      state[id] = !state[id];
-      saveDay(state);
-      el.classList.toggle('done', state[id]);
-      if (navigator.vibrate && state[id]) navigator.vibrate(8);
-      updateBand();
+      const id = el.dataset.toggle;
+      const state = getTodayState();
+      const nowDone = !(state[id] && state[id].done);
+      setTodayEntry(id, { done: nowDone });
+      el.closest('.ex').classList.toggle('done', nowDone);
+      if (navigator.vibrate && nowDone) navigator.vibrate(8);
     });
   });
-  document.querySelectorAll('.info').forEach(el => {
+  document.querySelectorAll('[data-info]').forEach(el => {
     el.addEventListener('click', (e) => {
       e.stopPropagation();
       el.closest('.ex').classList.toggle('show-cue');
     });
   });
+  document.querySelectorAll('[data-weight]').forEach(input => {
+    let t;
+    input.addEventListener('input', () => {
+      const id = input.dataset.weight;
+      clearTimeout(t);
+      t = setTimeout(() => {
+        setTodayEntry(id, { weight: input.value });
+        const flag = document.getElementById('flag_'+id);
+        flag.classList.add('show');
+        setTimeout(() => flag.classList.remove('show'), 1200);
+      }, 400);
+    });
+  });
   document.getElementById('resetBtn').addEventListener('click', () => {
-    const state = loadDay();
-    PLAN[currentTab].groups.flatMap(g=>g.items).forEach(i => delete state[i.id]);
-    saveDay(state);
-    render();
+    const logs = loadAllLogs();
+    delete logs[todayKey()];
+    saveAllLogs(logs);
+    renderTrain();
   });
 }
 
-function updateBand() {
-  const items = PLAN[currentTab].groups.flatMap(g => g.items);
-  const state = loadDay();
-  const done = items.filter(i => state[i.id]).length;
-  const total = items.length;
-  const pct = total ? Math.round(done/total*100) : 0;
-
-  document.getElementById('doneCount').textContent = done;
-  document.getElementById('totalCount').textContent = total;
-  document.getElementById('ringPct').textContent = pct + '%';
-  document.getElementById('ringProg').style.strokeDashoffset = CIRC - (CIRC * pct/100);
-
-  const streak = updateStreak();
-  document.getElementById('streakNum').textContent = streak;
-
-  const sub = document.getElementById('bandSub');
-  if (done === 0) sub.textContent = 'Tap an exercise to check it off';
-  else if (done === total) sub.textContent = currentTab === 'daily' ? 'Complete — streak counted' : 'Session complete';
-  else sub.textContent = `${total - done} to go`;
-
-  if (done === total && total > 0) showCheer();
+function allExercises() {
+  return [...PLAN.A.items, ...PLAN.B.items];
 }
 
-let cheerTimer;
-function showCheer() {
-  const ch = document.getElementById('cheer');
-  ch.textContent = currentTab === 'daily' ? 'Daily done. Streak counted.' : 'Gym session logged. Solid.';
-  ch.classList.add('show');
-  clearTimeout(cheerTimer);
-  cheerTimer = setTimeout(() => ch.classList.remove('show'), 2600);
+function renderHistory() {
+  const c = document.getElementById('content');
+  const logs = loadAllLogs();
+  const dates = Object.keys(logs).sort().reverse();
+
+  const now = new Date();
+  const cutoff = new Date(now);
+  if (historyView === 'week') cutoff.setDate(now.getDate() - 7);
+  else cutoff.setDate(now.getDate() - 30);
+
+  const inRange = dates.filter(d => new Date(d + 'T00:00:00') >= cutoff);
+
+  // summary stats
+  let sessionsLogged = inRange.filter(d => Object.values(logs[d]).some(e => e.done)).length;
+  let liftsLogged = 0;
+  inRange.forEach(d => { liftsLogged += Object.values(logs[d]).filter(e => e.weight).length; });
+
+  let html = `<div class="section">
+    <div class="hist-toggle">
+      <button data-hv="week" class="${historyView==='week'?'active':''}">This Week</button>
+      <button data-hv="month" class="${historyView==='month'?'active':''}">This Month</button>
+    </div>
+    <div class="summary-band">
+      <div class="summary-stat"><div class="num">${sessionsLogged}</div><div class="lbl">sessions</div></div>
+      <div class="summary-stat"><div class="num">${liftsLogged}</div><div class="lbl">weights logged</div></div>
+    </div>`;
+
+  if (inRange.length === 0) {
+    html += `<div class="hist-empty">No logged sessions in this window yet.<br>Check off exercises and log weights in Train.</div></div>`;
+    c.innerHTML = html;
+    attachHistory();
+    return;
+  }
+
+  allExercises().forEach(item => {
+    const entries = inRange
+      .map(d => ({ date: d, e: logs[d][item.id] }))
+      .filter(x => x.e && (x.e.weight || x.e.done))
+      .sort((a,b) => b.date.localeCompare(a.date));
+    if (entries.length === 0) return;
+
+    const weighted = entries.filter(x => x.e.weight);
+    let trendHtml = '';
+    if (weighted.length >= 2) {
+      const latest = parseFloat(weighted[0].e.weight);
+      const earliest = parseFloat(weighted[weighted.length-1].e.weight);
+      if (!isNaN(latest) && !isNaN(earliest)) {
+        if (latest > earliest) trendHtml = `<div class="hist-trend trend-up">↑ up from ${weighted[weighted.length-1].e.weight} to ${weighted[0].e.weight}</div>`;
+        else if (latest < earliest) trendHtml = `<div class="hist-trend trend-down">↓ down from ${weighted[weighted.length-1].e.weight} to ${weighted[0].e.weight}</div>`;
+        else trendHtml = `<div class="hist-trend trend-flat">→ holding at ${latest}</div>`;
+      }
+    }
+
+    html += `<div class="hist-card">
+      <div class="hist-ex-name">${item.name}</div>
+      <div class="hist-entries">
+        ${entries.slice(0,6).map(x => {
+          const dLabel = new Date(x.date+'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric'});
+          return `<div class="hist-entry"><span class="d">${dLabel}</span><span class="w">${x.e.weight ? x.e.weight : (x.e.done ? '✓ done' : '')}</span></div>`;
+        }).join('')}
+      </div>
+      ${trendHtml}
+    </div>`;
+  });
+
+  html += `</div>`;
+  c.innerHTML = html;
+  attachHistory();
+}
+
+function attachHistory() {
+  document.querySelectorAll('[data-hv]').forEach(b => {
+    b.addEventListener('click', () => { historyView = b.dataset.hv; renderHistory(); });
+  });
+}
+
+function render() {
+  if (currentTab === 'train') renderTrain();
+  else renderHistory();
 }
 
 document.querySelectorAll('.tab').forEach(t => {
